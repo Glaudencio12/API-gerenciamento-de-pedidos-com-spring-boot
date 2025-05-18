@@ -1,6 +1,8 @@
 package br.com.gerencimentodepedidos.service;
 
+import br.com.gerencimentodepedidos.data.dto.ProductDTO;
 import br.com.gerencimentodepedidos.exception.ResourceNotFoundException;
+import br.com.gerencimentodepedidos.mapper.ObjectMapper;
 import br.com.gerencimentodepedidos.model.ProductEntity;
 import br.com.gerencimentodepedidos.repository.ProductRepository;
 import org.slf4j.LoggerFactory;
@@ -15,28 +17,30 @@ public class ProductService {
     ProductRepository repository;
     private final org.slf4j.Logger logger = LoggerFactory.getLogger(ProductService.class.getName());
 
-    public ProductEntity create(ProductEntity product){
+    public ProductDTO create(ProductDTO product){
         logger.info("Creating a Product!");
-        return repository.save(product);
+        var entity = ObjectMapper.parseObject(product, ProductEntity.class);
+        return ObjectMapper.parseObject(repository.save(entity), ProductDTO.class);
     }
 
-    public ProductEntity findById(Long id){
+    public ProductDTO findById(Long id){
         logger.info("Finding a product");
-        return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found for this id"));
+        var entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found for this id"));
+        return ObjectMapper.parseObject(entity, ProductDTO.class);
     }
 
-    public List<ProductEntity> findAll(){
+    public List<ProductDTO> findAll(){
         logger.info("Finding all products");
-        return repository.findAll();
+        return ObjectMapper.parseListObjects(repository.findAll(), ProductDTO.class);
     }
 
-    public ProductEntity updateProduct(ProductEntity product){
+    public ProductDTO updateProduct(ProductDTO product){
         logger.info("Updating a Product!");
         ProductEntity entity = repository.findById(product.getId()).orElseThrow(() -> new ResourceNotFoundException("Product not found for this id"));
         entity.setName(product.getName());
         entity.setCategory(product.getCategory());
         entity.setPrice(product.getPrice());
-        return repository.save(product);
+        return ObjectMapper.parseObject(repository.save(entity), ProductDTO.class);
     }
 
     public void deleteProduct(Long id){

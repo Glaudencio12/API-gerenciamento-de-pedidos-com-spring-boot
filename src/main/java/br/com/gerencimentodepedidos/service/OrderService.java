@@ -1,6 +1,8 @@
 package br.com.gerencimentodepedidos.service;
 
+import br.com.gerencimentodepedidos.data.dto.OrderDTO;
 import br.com.gerencimentodepedidos.exception.ResourceNotFoundException;
+import br.com.gerencimentodepedidos.mapper.ObjectMapper;
 import br.com.gerencimentodepedidos.model.OrderEntity;
 import br.com.gerencimentodepedidos.model.OrderItemEntity;
 import br.com.gerencimentodepedidos.repository.OrderRepository;
@@ -17,19 +19,21 @@ public class OrderService {
     OrderRepository repository;
     private final Logger logger = LoggerFactory.getLogger(OrderService.class.getName());
 
-    public OrderEntity createOrder(OrderEntity order){
+    public OrderDTO createOrder(OrderDTO order){
         logger.info("Creating a order!");
-        return repository.save(order);
+        var entity = ObjectMapper.parseObject(order, OrderEntity.class);
+        return ObjectMapper.parseObject(repository.save(entity), OrderDTO.class);
     }
 
-    public OrderEntity findById(Long id){
+    public OrderDTO findById(Long id){
         logger.info("Find a order!");
-        return repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Order not found for this id"));
+        var enity = repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Order not found for this id"));
+        return ObjectMapper.parseObject(enity, OrderDTO.class);
     }
 
-    public List<OrderEntity> findAll(){
+    public List<OrderDTO> findAll(){
         logger.info("Finding all orders!");
-        return repository.findAll();
+        return ObjectMapper.parseListObjects(repository.findAll(), OrderDTO.class);
     }
 
     public void deleteOrder(Long id){

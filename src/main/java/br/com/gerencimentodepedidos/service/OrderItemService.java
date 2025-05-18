@@ -1,6 +1,10 @@
 package br.com.gerencimentodepedidos.service;
 
+import br.com.gerencimentodepedidos.data.dto.OrderDTO;
+import br.com.gerencimentodepedidos.data.dto.OrderItemDTO;
+import br.com.gerencimentodepedidos.data.dto.ProductDTO;
 import br.com.gerencimentodepedidos.exception.ResourceNotFoundException;
+import br.com.gerencimentodepedidos.mapper.ObjectMapper;
 import br.com.gerencimentodepedidos.model.OrderEntity;
 import br.com.gerencimentodepedidos.model.OrderItemEntity;
 import br.com.gerencimentodepedidos.model.ProductEntity;
@@ -14,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-
 @Service
 public class OrderItemService {
     @Autowired
@@ -26,31 +29,34 @@ public class OrderItemService {
 
     Logger logger = LoggerFactory.getLogger(OrderItemService.class.getName());
 
-    public OrderItemEntity createItemOrder(Long orderId, OrderItemEntity item){
+    public OrderItemDTO createItemOrder(Long orderId, OrderItemDTO item){
         logger.info("Creating a order!");
         OrderEntity order = orderRepository.findById(orderId).orElseThrow(()-> new ResourceNotFoundException("Item not found for this id"));
         ProductEntity product = productRepository.findById(item.getProduct().getId()).orElseThrow(()-> new ResourceNotFoundException("Item not found for this id"));
-        item.setOrder(order);
-        item.setProduct(product);
+        item.setOrder(ObjectMapper.parseObject(order, OrderDTO.class));
+        item.setProduct(ObjectMapper.parseObject(product, ProductDTO.class));
         item.setQuantity(item.getQuantity());
-        return repository.save(item);
+        var entity = ObjectMapper.parseObject(item, OrderItemEntity.class);
+        return ObjectMapper.parseObject(repository.save(entity), OrderItemDTO.class);
     }
 
-    public OrderItemEntity findById(Long id){
+    public OrderItemDTO findById(Long id){
         logger.info("Find a order!");
-        return repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Item not found for this id"));
+        var entity = repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Item not found for this id"));
+        return ObjectMapper.parseObject(entity, OrderItemDTO.class);
     }
 
-    public List<OrderItemEntity> findAll(){
+    public List<OrderItemDTO> findAll(){
         logger.info("Finding all orders!");
-        return repository.findAll();
+        return ObjectMapper.parseListObjects(repository.findAll(), OrderItemDTO.class);
     }
 
-    public OrderItemEntity updateItem(OrderItemEntity item){
+    public OrderItemDTO updateItem(OrderItemDTO item){
         OrderItemEntity itemEntity = repository.findById(item.getId()).orElseThrow(()-> new ResourceNotFoundException("Order not found for this id"));
-        itemEntity.setProduct(item.getProduct());
+        itemEntity.setProduct(ObjectMapper.parseObject(item.getProduct(), ProductEntity.class));
         itemEntity.setQuantity(item.getQuantity());
-        return repository.save(itemEntity);
+        var entity = ObjectMapper.parseObject(itemEntity, OrderItemEntity.class);
+        return ObjectMapper.parseObject(repository.save(entity), OrderItemDTO.class);
     }
 
     public void deleteItem(Long id){

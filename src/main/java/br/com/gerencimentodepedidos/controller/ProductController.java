@@ -1,5 +1,6 @@
 package br.com.gerencimentodepedidos.controller;
 
+import br.com.gerencimentodepedidos.data.dto.ProductDTO;
 import br.com.gerencimentodepedidos.model.ProductEntity;
 import br.com.gerencimentodepedidos.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,22 +17,22 @@ public class ProductController {
     ProductService services;
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ProductEntity findById(@PathVariable("id") Long id){
+    public ProductDTO findById(@PathVariable("id") Long id){
         return services.findById(id);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<ProductEntity> findAll(){
+    public List<ProductDTO> findAll(){
         return services.findAll();
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ProductEntity create(@RequestBody ProductEntity product){
+    public ProductDTO create(@RequestBody ProductDTO product){
         return services.create(product);
     }
 
-    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ProductEntity update(@RequestBody ProductEntity product){
+    @PutMapping(value = "/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ProductDTO update(@RequestBody ProductDTO product){
         return services.updateProduct(product);
     }
 

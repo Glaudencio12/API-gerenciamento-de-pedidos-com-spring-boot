@@ -1,6 +1,6 @@
 package br.com.gerencimentodepedidos.controller;
 
-import br.com.gerencimentodepedidos.model.OrderEntity;
+import br.com.gerencimentodepedidos.data.dto.OrderDTO;
 import br.com.gerencimentodepedidos.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -16,24 +16,23 @@ public class OrderController {
     OrderService services;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public OrderEntity create(@RequestBody OrderEntity order){
+    public OrderDTO create(@RequestBody OrderDTO order){
         return services.createOrder(order);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public OrderEntity findById(@PathVariable("id") Long id){
+    public OrderDTO findById(@PathVariable("id") Long id){
         return services.findById(id);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<OrderEntity> findAll(){
+    public List<OrderDTO> findAll(){
         return services.findAll();
     }
 
-    @DeleteMapping(value = "/{id}")
+    @DeleteMapping(value = "/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id){
         services.deleteOrder(id);
         return ResponseEntity.noContent().build();
     }
-
 }

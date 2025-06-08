@@ -24,8 +24,12 @@ public class OrderItemService {
     OrderItemRepository repository;
     @Autowired
     ProductRepository productRepository;
+
     @Autowired
     OrderRepository orderRepository;
+
+    @Autowired
+    HateoasLinks hateoas;
 
     Logger logger = LoggerFactory.getLogger(OrderItemService.class.getName());
 
@@ -33,22 +37,28 @@ public class OrderItemService {
         logger.info("Creating a order!");
         OrderEntity order = orderRepository.findById(orderId).orElseThrow(()-> new ResourceNotFoundException("Item not found for this id"));
         ProductEntity product = productRepository.findById(item.getProduct().getId()).orElseThrow(()-> new ResourceNotFoundException("Item not found for this id"));
-        item.setOrder(ObjectMapper.parseObject(order, OrderDTO.class));
+        item.setOrderDTO(ObjectMapper.parseObject(order, OrderDTO.class));
         item.setProduct(ObjectMapper.parseObject(product, ProductDTO.class));
         item.setQuantity(item.getQuantity());
         var entity = ObjectMapper.parseObject(item, OrderItemEntity.class);
-        return ObjectMapper.parseObject(repository.save(entity), OrderItemDTO.class);
+        var dto = ObjectMapper.parseObject(repository.save(entity), OrderItemDTO.class);
+        hateoas.links(dto, orderId);
+        return dto;
     }
 
     public OrderItemDTO findById(Long id){
         logger.info("Find a order!");
         var entity = repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Item not found for this id"));
-        return ObjectMapper.parseObject(entity, OrderItemDTO.class);
+        var dto = ObjectMapper.parseObject(entity, OrderItemDTO.class);
+        hateoas.links(dto);
+        return dto;
     }
 
     public List<OrderItemDTO> findAll(){
         logger.info("Finding all orders!");
-        return ObjectMapper.parseListObjects(repository.findAll(), OrderItemDTO.class);
+        var dtos = ObjectMapper.parseListObjects(repository.findAll(), OrderItemDTO.class);
+        dtos.forEach(o -> hateoas.links(o));
+        return dtos;
     }
 
     public OrderItemDTO updateItem(OrderItemDTO item){
@@ -56,7 +66,9 @@ public class OrderItemService {
         itemEntity.setProduct(ObjectMapper.parseObject(item.getProduct(), ProductEntity.class));
         itemEntity.setQuantity(item.getQuantity());
         var entity = ObjectMapper.parseObject(itemEntity, OrderItemEntity.class);
-        return ObjectMapper.parseObject(repository.save(entity), OrderItemDTO.class);
+        var dto = ObjectMapper.parseObject(repository.save(entity), OrderItemDTO.class);
+        hateoas.links(dto);
+        return dto;
     }
 
     public void deleteItem(Long id){

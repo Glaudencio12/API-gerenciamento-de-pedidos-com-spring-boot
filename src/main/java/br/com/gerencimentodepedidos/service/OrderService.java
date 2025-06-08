@@ -17,23 +17,33 @@ import java.util.List;
 public class OrderService {
     @Autowired
     OrderRepository repository;
+
+    @Autowired
+    HateoasLinks hateoas;
+
     private final Logger logger = LoggerFactory.getLogger(OrderService.class.getName());
 
     public OrderDTO createOrder(OrderDTO order){
         logger.info("Creating a order!");
         var entity = ObjectMapper.parseObject(order, OrderEntity.class);
-        return ObjectMapper.parseObject(repository.save(entity), OrderDTO.class);
+        var dto = ObjectMapper.parseObject(repository.save(entity), OrderDTO.class);
+        hateoas.links(dto);
+        return dto;
     }
 
     public OrderDTO findById(Long id){
         logger.info("Find a order!");
-        var enity = repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Order not found for this id"));
-        return ObjectMapper.parseObject(enity, OrderDTO.class);
+        var entity = repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Order not found for this id"));
+        var dto = ObjectMapper.parseObject(entity, OrderDTO.class);
+        hateoas.links(dto);
+        return dto;
     }
 
     public List<OrderDTO> findAll(){
         logger.info("Finding all orders!");
-        return ObjectMapper.parseListObjects(repository.findAll(), OrderDTO.class);
+        var dtos = ObjectMapper.parseListObjects(repository.findAll(), OrderDTO.class);
+        dtos.forEach(o -> hateoas.links(o));
+        return dtos;
     }
 
     public void deleteOrder(Long id){

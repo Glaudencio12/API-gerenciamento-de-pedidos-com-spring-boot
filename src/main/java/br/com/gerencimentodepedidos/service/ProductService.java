@@ -15,23 +15,33 @@ import java.util.List;
 public class ProductService {
     @Autowired
     ProductRepository repository;
+
+    @Autowired
+    HateoasLinks hateoas;
+
     private final org.slf4j.Logger logger = LoggerFactory.getLogger(ProductService.class.getName());
 
     public ProductDTO create(ProductDTO product){
         logger.info("Creating a Product!");
         var entity = ObjectMapper.parseObject(product, ProductEntity.class);
-        return ObjectMapper.parseObject(repository.save(entity), ProductDTO.class);
+        var dto = ObjectMapper.parseObject(repository.save(entity), ProductDTO.class);
+        hateoas.links(dto);
+        return dto;
     }
 
     public ProductDTO findById(Long id){
         logger.info("Finding a product");
         var entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found for this id"));
-        return ObjectMapper.parseObject(entity, ProductDTO.class);
+        var dto = ObjectMapper.parseObject(entity, ProductDTO.class);
+        hateoas.links(dto);
+        return dto;
     }
 
     public List<ProductDTO> findAll(){
         logger.info("Finding all products");
-        return ObjectMapper.parseListObjects(repository.findAll(), ProductDTO.class);
+        var dto = ObjectMapper.parseListObjects(repository.findAll(), ProductDTO.class);
+        dto.forEach(p -> hateoas.links(p));
+        return dto;
     }
 
     public ProductDTO updateProduct(ProductDTO product){
@@ -40,7 +50,9 @@ public class ProductService {
         entity.setName(product.getName());
         entity.setCategory(product.getCategory());
         entity.setPrice(product.getPrice());
-        return ObjectMapper.parseObject(repository.save(entity), ProductDTO.class);
+        var dto = ObjectMapper.parseObject(repository.save(entity), ProductDTO.class);
+        hateoas.links(dto);
+        return dto;
     }
 
     public void deleteProduct(Long id){

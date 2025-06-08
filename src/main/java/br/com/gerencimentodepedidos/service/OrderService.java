@@ -3,9 +3,10 @@ package br.com.gerencimentodepedidos.service;
 import br.com.gerencimentodepedidos.data.dto.OrderDTO;
 import br.com.gerencimentodepedidos.exception.ResourceNotFoundException;
 import br.com.gerencimentodepedidos.mapper.ObjectMapper;
-import br.com.gerencimentodepedidos.model.OrderEntity;
-import br.com.gerencimentodepedidos.model.OrderItemEntity;
+import br.com.gerencimentodepedidos.model.Order;
+import br.com.gerencimentodepedidos.model.OrderItem;
 import br.com.gerencimentodepedidos.repository.OrderRepository;
+import br.com.gerencimentodepedidos.utils.HateoasLinks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class OrderService {
 
     public OrderDTO createOrder(OrderDTO order){
         logger.info("Creating a order!");
-        var entity = ObjectMapper.parseObject(order, OrderEntity.class);
+        var entity = ObjectMapper.parseObject(order, Order.class);
         var dto = ObjectMapper.parseObject(repository.save(entity), OrderDTO.class);
         hateoas.links(dto);
         return dto;
@@ -47,15 +48,15 @@ public class OrderService {
     }
 
     public void deleteOrder(Long id){
-        OrderEntity order = repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Order not found for this id"));
+        Order order = repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Order not found for this id"));
         repository.delete(order);
     }
 
     public void fullValue(Long id) {
-        OrderEntity order = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order not found for this id"));
+        Order order = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order not found for this id"));
         double valueItem = 0;
         double valueFinalOrder = 0;
-        for (OrderItemEntity item : order.getItems()) {
+        for (OrderItem item : order.getItems()) {
             int quantity = item.getQuantity();
             double price = item.getProduct().getPrice();
             valueItem = price * quantity;

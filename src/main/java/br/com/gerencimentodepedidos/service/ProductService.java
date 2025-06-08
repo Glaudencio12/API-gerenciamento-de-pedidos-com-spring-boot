@@ -3,8 +3,9 @@ package br.com.gerencimentodepedidos.service;
 import br.com.gerencimentodepedidos.data.dto.ProductDTO;
 import br.com.gerencimentodepedidos.exception.ResourceNotFoundException;
 import br.com.gerencimentodepedidos.mapper.ObjectMapper;
-import br.com.gerencimentodepedidos.model.ProductEntity;
+import br.com.gerencimentodepedidos.model.Product;
 import br.com.gerencimentodepedidos.repository.ProductRepository;
+import br.com.gerencimentodepedidos.utils.HateoasLinks;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ public class ProductService {
 
     public ProductDTO create(ProductDTO product){
         logger.info("Creating a Product!");
-        var entity = ObjectMapper.parseObject(product, ProductEntity.class);
+        var entity = ObjectMapper.parseObject(product, Product.class);
         var dto = ObjectMapper.parseObject(repository.save(entity), ProductDTO.class);
         hateoas.links(dto);
         return dto;
@@ -46,7 +47,7 @@ public class ProductService {
 
     public ProductDTO updateProduct(ProductDTO product){
         logger.info("Updating a Product!");
-        ProductEntity entity = repository.findById(product.getId()).orElseThrow(() -> new ResourceNotFoundException("Product not found for this id"));
+        Product entity = repository.findById(product.getId()).orElseThrow(() -> new ResourceNotFoundException("Product not found for this id"));
         entity.setName(product.getName());
         entity.setCategory(product.getCategory());
         entity.setPrice(product.getPrice());
@@ -57,7 +58,7 @@ public class ProductService {
 
     public void deleteProduct(Long id){
         logger.info("Deleting a product!");
-        ProductEntity product = repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Product not found for this id"));
+        Product product = repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Product not found for this id"));
         repository.delete(product);
     }
 

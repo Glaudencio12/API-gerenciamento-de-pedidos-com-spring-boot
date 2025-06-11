@@ -1,7 +1,5 @@
 package br.com.gerencimentodepedidos.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "tb_order_item")
 @NoArgsConstructor
 @Data
-public class OrderItemEntity {
+public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -18,11 +16,11 @@ public class OrderItemEntity {
 
     @ManyToOne
     @JoinColumn(name = "order_id")
-    private OrderEntity order;
+    private Order order;
 
     @ManyToOne
     @JoinColumn(name = "product_id")
-    private ProductEntity product;
+    private Product product;
 
     @Column(nullable = false, length = 25)
     private int quantity;

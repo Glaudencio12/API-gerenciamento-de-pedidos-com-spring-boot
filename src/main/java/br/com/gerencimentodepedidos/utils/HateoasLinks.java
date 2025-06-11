@@ -1,4 +1,4 @@
-package br.com.gerencimentodepedidos.util;
+package br.com.gerencimentodepedidos.utils;
 
 import br.com.gerencimentodepedidos.controller.OrderController;
 import br.com.gerencimentodepedidos.controller.OrderItemController;

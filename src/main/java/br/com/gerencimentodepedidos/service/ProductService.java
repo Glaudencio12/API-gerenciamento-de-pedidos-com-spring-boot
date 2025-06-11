@@ -6,6 +6,7 @@ import br.com.gerencimentodepedidos.mapper.ObjectMapper;
 import br.com.gerencimentodepedidos.model.Product;
 import br.com.gerencimentodepedidos.repository.ProductRepository;
 import br.com.gerencimentodepedidos.utils.HateoasLinks;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,7 @@ public class ProductService {
     @Autowired
     HateoasLinks hateoas;
 
-    private final org.slf4j.Logger logger = LoggerFactory.getLogger(ProductService.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(ProductService.class.getName());
 
     public ProductDTO create(ProductDTO product){
         logger.info("Creating a Product!");

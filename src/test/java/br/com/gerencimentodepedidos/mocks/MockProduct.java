@@ -9,14 +9,6 @@ import java.util.List;
 
 public class MockProduct {
 
-    public Product mockEntity() {
-        return mockProductEntity(0);
-    }
-
-    public ProductDTO mockDTO() {
-        return mockProductDTO(0);
-    }
-
     public List<Product> mockListProducts(){
         List<Product> products = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
@@ -40,7 +32,7 @@ public class MockProduct {
         product.setName("Name Test " + number);
         ProductCategory[] categories = ProductCategory.values();
         product.setCategory(categories[(int)(number % categories.length)]);
-        product.setPrice((double) number);
+        product.setPrice((double) number + 10);
         return product;
     }
 
@@ -50,7 +42,7 @@ public class MockProduct {
         product.setName("Name Test " + number);
         ProductCategory[] categories = ProductCategory.values();
         product.setCategory(categories[(int)(number % categories.length)]);
-        product.setPrice((double) number);
+        product.setPrice((double) number + 10);
         return product;
     }
 }

@@ -10,6 +10,8 @@ import br.com.gerencimentodepedidos.model.Order;
 import br.com.gerencimentodepedidos.model.OrderItem;
 import br.com.gerencimentodepedidos.model.Product;
 import br.com.gerencimentodepedidos.repository.OrderItemRepository;
+import br.com.gerencimentodepedidos.repository.OrderRepository;
+import br.com.gerencimentodepedidos.repository.ProductRepository;
 import br.com.gerencimentodepedidos.utils.HateoasLinks;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,12 +19,15 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.when;
 
@@ -35,7 +40,13 @@ class OrderItemServiceTest {
     private MockProduct inputProduct;
 
     @Mock
-    OrderItemRepository repository;
+    OrderItemRepository itemRepository;
+
+    @Mock
+    OrderRepository orderRepository;
+
+    @Mock
+    ProductRepository productRepository;
 
     @Mock
     HateoasLinks hateoas;
@@ -45,16 +56,16 @@ class OrderItemServiceTest {
 
     @BeforeEach
     void setUp() {
-        inputItem = new MockItem();
-        inputOrder = new MockOrder();
         inputProduct = new MockProduct();
-        MockitoAnnotations.openMocks(this);
+        inputItem = new MockItem(inputProduct);
+        inputOrder = new MockOrder(inputItem);
     }
 
-    public void assertLink(OrderItemDTO dto, String rel, String href, String type){
-        assertTrue(dto.getLinks().stream().anyMatch(link -> link.getRel().value().equals(rel)
-                && link.getHref().endsWith(href)
-                && link.getType().equals(type)));
+    public void assertLink(OrderItemDTO dto, String rel, String href, String type) {
+        assertTrue(dto.getLinks().stream().anyMatch(link ->
+                link.getRel().value().equals(rel)
+                        && link.getHref().endsWith(href)
+                        && link.getType().equals(type)));
     }
 
     @Test
@@ -62,41 +73,68 @@ class OrderItemServiceTest {
         Product product = inputProduct.mockProductEntity(1);
         ProductDTO productDTO = inputProduct.mockProductDTO(1);
 
-        Order order = inputOrder.mockOrderEntity(1, inputItem.mockItemsList());
-        OrderDTO orderDTO = inputOrder.mockOrderDTO(1, inputItem.mockItemsDTOList());
+        Order order = inputOrder.mockOrder(1);
+        order.setId(1L);
+        OrderDTO orderDTO = inputOrder.mockOrderDTO(1);
+        orderDTO.setId(1L);
+
+        List<OrderItem> itemList = inputItem.mockItemsList(order);
+        List<OrderItemDTO> itemDTOList = inputItem.mockItemsDTOList(orderDTO);
+
+        order.setItems(itemList);
+        orderDTO.setItems(itemDTOList);
 
         OrderItem item = inputItem.mockItemEntity(1, order, product, 3);
         OrderItemDTO itemDTO = inputItem.mockItemDTO(1, orderDTO, productDTO, 3);
 
-        when(repository.save(any(OrderItem.class))).thenReturn(item);
-        doCallRealMethod().when(hateoas).links(itemDTO);
+        when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
+        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
+        when(itemRepository.save(any(OrderItem.class))).thenReturn(item);
 
-        var result = service.createItemOrder(order.getId(), itemDTO);
+        doCallRealMethod().when(hateoas).links(any(OrderItemDTO.class), any(Long.class));
+
+        var result = service.createItemOrder(orderDTO.getId(), itemDTO);
 
         assertNotNull(result);
         assertNotNull(result.getId());
         assertNotNull(result.getLinks());
 
-        assertLink(result, "findById", "/items/1", "GET" );
-        assertLink(result, "findAll", "/items", "GET" );
-        assertLink(result, "create", "items/order/1", "POST" );
-        assertLink(result, "update", "/items/update", "PUT" );
-        assertLink(result, "delete", "/items/delete/1", "DELETE" );
+        assertLink(result, "findById", "/items/1", "GET");
+        assertLink(result, "findAll", "/items", "GET");
+        assertLink(result, "create", "items/order/1", "POST");
+        assertLink(result, "update", "/items/update", "PUT");
+        assertLink(result, "delete", "/items/delete/1", "DELETE");
     }
 
-    @Test
-    void findById() {
-    }
+    @Test void findById() {
+        Product product = inputProduct.mockProductEntity(1);
+        ProductDTO productDTO = inputProduct.mockProductDTO(1);
 
-    @Test
-    void findAll() {
-    }
+        Order order = inputOrder.mockOrder(1);
+        OrderDTO orderDTO = inputOrder.mockOrderDTO(1);
+        order.setId(1L);
+        orderDTO.setId(1L);
 
-    @Test
-    void updateItem() {
-    }
+        OrderItem item = inputItem.mockItemEntity(1, order, product, 3);
+        OrderItemDTO itemDTO = inputItem.mockItemDTO(1, orderDTO, productDTO, 3);
 
-    @Test
-    void deleteItem() {
+        when(itemRepository.findById(item.getId())).thenReturn(Optional.of(item));
+        doCallRealMethod().when(hateoas).links(any(OrderItemDTO.class));
+        doCallRealMethod().when(hateoas).links(any(OrderItemDTO.class), anyLong());
+
+
+        var result = service.findById(item.getId());
+
+        assertNotNull(result);
+        assertNotNull(result.getId());
+        assertNotNull(result.getLinks());
+
+        assertLink(result, "findById", "/items/1", "GET");
+        assertLink(result, "findAll", "/items", "GET");
+        assertLink(result, "update", "/items/update", "PUT");
+        assertLink(result, "delete", "/items/delete/1", "DELETE");
     }
+    @Test void findAll() {}
+    @Test void updateItem() {}
+    @Test void deleteItem() {}
 }

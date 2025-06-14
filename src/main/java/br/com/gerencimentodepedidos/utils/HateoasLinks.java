@@ -25,18 +25,16 @@ public class HateoasLinks {
             dto2.add(linkTo(methodOn(OrderController.class).findAll()).withRel("findAll").withType("GET").withTitle("Search for all orders"));
             dto2.add(linkTo(methodOn(OrderController.class).create(dto2)).withRel("create").withType("POST").withTitle("Create order"));
             dto2.add(linkTo(methodOn(OrderController.class).delete(dto2.getId())).withRel("delete").withType("DELETE").withTitle("Delete order"));
-        }else{
-            OrderItemDTO dto3 = (OrderItemDTO) dto;
-            dto3.add(linkTo(methodOn(OrderItemController.class).findById(dto3.getId())).withRel("findById").withType("GET").withTitle("Search for item"));
-            dto3.add(linkTo(methodOn(OrderItemController.class).findAll()).withRel("findAll").withType("GET").withTitle("Search for item"));
-            dto3.add(linkTo(methodOn(OrderItemController.class).update(dto3)).withRel("update").withType("UPDATE").withTitle("Update item"));
-            dto3.add(linkTo(methodOn(OrderItemController.class).delete(dto3.getId())).withRel("delete").withType("DELETE").withTitle("Delete item"));
         }
     }
 
     public void links(Object dto, Long id){
         if (dto instanceof OrderItemDTO dtoItem) {
             dtoItem.add(linkTo(methodOn(OrderItemController.class).create(id, dtoItem)).withRel("create").withType("POST").withTitle("Create item"));
+            dtoItem.add(linkTo(methodOn(OrderItemController.class).findById(dtoItem.getId())).withRel("findById").withType("GET").withTitle("Search for item"));
+            dtoItem.add(linkTo(methodOn(OrderItemController.class).findAll()).withRel("findAll").withType("GET").withTitle("Search for item"));
+            dtoItem.add(linkTo(methodOn(OrderItemController.class).update(dtoItem)).withRel("update").withType("PUT").withTitle("Update item"));
+            dtoItem.add(linkTo(methodOn(OrderItemController.class).delete(dtoItem.getId())).withRel("delete").withType("DELETE").withTitle("Delete item"));
         }
     }
 }

@@ -134,7 +134,4 @@ class OrderItemServiceTest {
         assertLink(result, "update", "/items/update", "PUT");
         assertLink(result, "delete", "/items/delete/1", "DELETE");
     }
-    @Test void findAll() {}
-    @Test void updateItem() {}
-    @Test void deleteItem() {}
 }

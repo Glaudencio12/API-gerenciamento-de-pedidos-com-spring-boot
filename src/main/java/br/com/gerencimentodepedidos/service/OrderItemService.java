@@ -43,7 +43,7 @@ public class OrderItemService {
         item.setQuantity(item.getQuantity());
         var entity = ObjectMapper.parseObject(item, OrderItem.class);
         var dto = ObjectMapper.parseObject(repository.save(entity), OrderItemDTO.class);
-        hateoas.links(dto, orderId);
+        hateoas.links(dto);
         return dto;
     }
 
@@ -51,6 +51,7 @@ public class OrderItemService {
         logger.info("Find a order!");
         var entity = repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Item not found for this id"));
         var dto = ObjectMapper.parseObject(entity, OrderItemDTO.class);
+        hateoas.links(dto.getProduct());
         hateoas.links(dto);
         return dto;
     }
@@ -58,7 +59,10 @@ public class OrderItemService {
     public List<OrderItemDTO> findAll(){
         logger.info("Finding all orders!");
         var dtos = ObjectMapper.parseListObjects(repository.findAll(), OrderItemDTO.class);
-        dtos.forEach(o -> hateoas.links(o));
+        dtos.forEach(orderItemDTO -> {
+            hateoas.links(orderItemDTO.getProduct());
+            hateoas.links(orderItemDTO);
+        });
         return dtos;
     }
 

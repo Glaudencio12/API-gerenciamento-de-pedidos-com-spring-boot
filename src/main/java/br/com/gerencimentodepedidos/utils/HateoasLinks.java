@@ -6,6 +6,8 @@ import br.com.gerencimentodepedidos.controller.ProductController;
 import br.com.gerencimentodepedidos.data.dto.OrderDTO;
 import br.com.gerencimentodepedidos.data.dto.OrderItemDTO;
 import br.com.gerencimentodepedidos.data.dto.ProductDTO;
+import br.com.gerencimentodepedidos.service.OrderItemService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -25,14 +27,14 @@ public class HateoasLinks {
             dto2.add(linkTo(methodOn(OrderController.class).findAll()).withRel("findAll").withType("GET").withTitle("Search for all orders"));
             dto2.add(linkTo(methodOn(OrderController.class).create(dto2)).withRel("create").withType("POST").withTitle("Create order"));
             dto2.add(linkTo(methodOn(OrderController.class).delete(dto2.getId())).withRel("delete").withType("DELETE").withTitle("Delete order"));
-        }
-    }
+        } else if (dto instanceof OrderItemDTO dtoItem) {
+            Long orderId = (dtoItem.getOrderDTO() != null) ? dtoItem.getOrderDTO().getId() : null;
 
-    public void links(Object dto, Long id){
-        if (dto instanceof OrderItemDTO dtoItem) {
-            dtoItem.add(linkTo(methodOn(OrderItemController.class).create(id, dtoItem)).withRel("create").withType("POST").withTitle("Create item"));
+            if (orderId != null) {
+                dtoItem.add(linkTo(methodOn(OrderItemController.class).create(orderId, dtoItem)).withRel("create").withType("POST").withTitle("Create item"));
+            }
             dtoItem.add(linkTo(methodOn(OrderItemController.class).findById(dtoItem.getId())).withRel("findById").withType("GET").withTitle("Search for item"));
-            dtoItem.add(linkTo(methodOn(OrderItemController.class).findAll()).withRel("findAll").withType("GET").withTitle("Search for item"));
+            dtoItem.add(linkTo(methodOn(OrderItemController.class).findAll()).withRel("findAll").withType("GET").withTitle("Search for all items"));
             dtoItem.add(linkTo(methodOn(OrderItemController.class).update(dtoItem)).withRel("update").withType("PUT").withTitle("Update item"));
             dtoItem.add(linkTo(methodOn(OrderItemController.class).delete(dtoItem.getId())).withRel("delete").withType("DELETE").withTitle("Delete item"));
         }

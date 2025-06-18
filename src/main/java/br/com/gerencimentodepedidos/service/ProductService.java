@@ -42,7 +42,7 @@ public class ProductService {
     public List<ProductDTO> findAll(){
         logger.info("Finding all products");
         var dto = ObjectMapper.parseListObjects(repository.findAll(), ProductDTO.class);
-        dto.forEach(p -> hateoas.links(p));
+        dto.forEach(productDTO -> hateoas.links(productDTO));
         return dto;
     }
 

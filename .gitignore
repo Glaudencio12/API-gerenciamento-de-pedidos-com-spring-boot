@@ -1,6 +1,11 @@
+# HELP files
 HELP.md
+
+# Build artifacts
 target/
 !.mvn/wrapper/maven-wrapper.jar
+
+# Exclude target directories within src/main and src/test
 !**/src/main/**/target/
 !**/src/test/**/target/
 
@@ -31,3 +36,44 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Compiled class files
+*.class
+
+# Node modules
+/node_modules
+
+# SSH Keys
+*.pem
+*.ppk
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# Merge Files
+*.bak
+
+# Eclipse files
+/bin/
+blog/bin/
+**/.tern-project
+**/.gradle
+**/.project
+**/.classpath
+**/.settings/
+**/.factorypath
+
+# Other Files
+*.ini
+
+# Virtual machine crash logs
+hs_err_pid*
+/.metadata/
+
+# Text files
+*.txt

@@ -23,11 +23,15 @@ import java.util.List;
 public class OrderItemService {
     @Autowired
     OrderItemRepository repository;
+
     @Autowired
     ProductRepository productRepository;
 
     @Autowired
     OrderRepository orderRepository;
+
+    @Autowired
+    OrderService serviceOrder;
 
     @Autowired
     HateoasLinks hateoas;
@@ -79,5 +83,6 @@ public class OrderItemService {
     public void deleteItem(Long id){
         OrderItem item = repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Order not found for this id"));
         repository.delete(item);
+        serviceOrder.updateOrders();
     }
 }

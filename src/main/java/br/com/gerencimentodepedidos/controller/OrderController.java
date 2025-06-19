@@ -1,5 +1,6 @@
 package br.com.gerencimentodepedidos.controller;
 
+import br.com.gerencimentodepedidos.controller.docs.OrderControllerDocs;
 import br.com.gerencimentodepedidos.data.dto.OrderDTO;
 import br.com.gerencimentodepedidos.service.OrderService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -13,7 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/orders")
 @Tag(name = "Order", description = "EndPoints para for the Order class")
-public class OrderController implements br.com.gerencimentodepedidos.controller.docs.OrderControllerDocs {
+public class OrderController implements OrderControllerDocs {
     @Autowired
     OrderService services;
 
@@ -37,7 +38,7 @@ public class OrderController implements br.com.gerencimentodepedidos.controller.
         return services.findAll();
     }
 
-    @DeleteMapping(value = "/delete/{id}")
+    @DeleteMapping(value = "/deleteOrder/{id}")
     @Override
     public ResponseEntity<?> delete(@PathVariable("id") Long id){
         services.deleteOrder(id);

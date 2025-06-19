@@ -1,49 +1,10 @@
-# HELP files
-HELP.md
-
-# Build artifacts
-target/
-!.mvn/wrapper/maven-wrapper.jar
-
-# Exclude target directories within src/main and src/test
-!**/src/main/**/target/
-!**/src/test/**/target/
-
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
-.vscode/
-
-# Compiled class files
 *.class
 
-# Node modules
+
 /node_modules
 
 # SSH Keys
+
 *.pem
 *.ppk
 
@@ -58,22 +19,28 @@ build/
 # Merge Files
 *.bak
 
-# Eclipse files
-/bin/
-blog/bin/
-**/.tern-project
-**/.gradle
+#Gradle temporary files
+target/
+
+#Eclipse files
 **/.project
 **/.classpath
 **/.settings/
+/bin/
+blog/bin/
+**/.tern-project
 **/.factorypath
 
-# Other Files
+#IntelliJ files
+**/*.iml
+**/.idea
+**/.gradle
+
+#Other Files
 *.ini
 
-# Virtual machine crash logs
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 /.metadata/
 
-# Text files
 *.txt

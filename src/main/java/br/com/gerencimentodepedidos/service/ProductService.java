@@ -17,6 +17,9 @@ import java.util.List;
 public class ProductService {
     @Autowired
     ProductRepository repository;
+    
+    @Autowired
+    OrderService serviceOrder;
 
     @Autowired
     HateoasLinks hateoas;
@@ -53,6 +56,7 @@ public class ProductService {
         entity.setCategory(product.getCategory());
         entity.setPrice(product.getPrice());
         var dto = ObjectMapper.parseObject(repository.save(entity), ProductDTO.class);
+        serviceOrder.updateOrders();
         hateoas.links(dto);
         return dto;
     }
@@ -62,5 +66,4 @@ public class ProductService {
         Product product = repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Product not found for this id"));
         repository.delete(product);
     }
-
 }

@@ -21,22 +21,21 @@ import java.util.List;
 
 @Service
 public class OrderItemService {
-    @Autowired
-    OrderItemRepository repository;
-
-    @Autowired
-    ProductRepository productRepository;
-
-    @Autowired
-    OrderRepository orderRepository;
-
-    @Autowired
-    OrderService serviceOrder;
-
-    @Autowired
-    HateoasLinks hateoas;
+    private final OrderItemRepository repository;
+    private final ProductRepository productRepository;
+    private final OrderRepository orderRepository;
+    private final OrderService serviceOrder;
+    private final HateoasLinks hateoas;
 
     Logger logger = LoggerFactory.getLogger(OrderItemService.class.getName());
+
+    public OrderItemService(OrderItemRepository repository, ProductRepository productRepository, OrderRepository orderRepository, OrderService serviceOrder, HateoasLinks hateoas) {
+        this.repository = repository;
+        this.productRepository = productRepository;
+        this.orderRepository = orderRepository;
+        this.serviceOrder = serviceOrder;
+        this.hateoas = hateoas;
+    }
 
     public OrderItemDTO createItemOrder(Long orderId, OrderItemDTO item){
         logger.info("Creating a order!");
@@ -83,6 +82,6 @@ public class OrderItemService {
     public void deleteItem(Long id){
         OrderItem item = repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Order not found for this id"));
         repository.delete(item);
-        serviceOrder.updateOrders();
+        serviceOrder.updateTotalOrderValue();
     }
 }

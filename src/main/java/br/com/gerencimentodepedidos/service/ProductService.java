@@ -8,25 +8,26 @@ import br.com.gerencimentodepedidos.repository.ProductRepository;
 import br.com.gerencimentodepedidos.utils.HateoasLinks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class ProductService {
-    @Autowired
-    ProductRepository repository;
-    
-    @Autowired
-    OrderService serviceOrder;
 
-    @Autowired
-    HateoasLinks hateoas;
+    private final ProductRepository repository;
+    private final OrderService serviceOrder;
+    private final HateoasLinks hateoas;
+
+    public ProductService(ProductRepository repository, OrderService serviceOrder, HateoasLinks hateoas) {
+        this.repository = repository;
+        this.serviceOrder = serviceOrder;
+        this.hateoas = hateoas;
+    }
 
     private final Logger logger = LoggerFactory.getLogger(ProductService.class.getName());
 
-    public ProductDTO create(ProductDTO product){
+    public ProductDTO create(ProductDTO product) {
         logger.info("Creating a Product!");
         var entity = ObjectMapper.parseObject(product, Product.class);
         var dto = ObjectMapper.parseObject(repository.save(entity), ProductDTO.class);
@@ -34,7 +35,7 @@ public class ProductService {
         return dto;
     }
 
-    public ProductDTO findById(Long id){
+    public ProductDTO findById(Long id) {
         logger.info("Finding a product");
         var entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found for this id"));
         var dto = ObjectMapper.parseObject(entity, ProductDTO.class);
@@ -42,28 +43,28 @@ public class ProductService {
         return dto;
     }
 
-    public List<ProductDTO> findAll(){
+    public List<ProductDTO> findAll() {
         logger.info("Finding all products");
         var dto = ObjectMapper.parseListObjects(repository.findAll(), ProductDTO.class);
         dto.forEach(productDTO -> hateoas.links(productDTO));
         return dto;
     }
 
-    public ProductDTO updateProduct(ProductDTO product){
+    public ProductDTO updateProduct(ProductDTO product) {
         logger.info("Updating a Product!");
         Product entity = repository.findById(product.getId()).orElseThrow(() -> new ResourceNotFoundException("Product not found for this id"));
         entity.setName(product.getName());
         entity.setCategory(product.getCategory());
         entity.setPrice(product.getPrice());
         var dto = ObjectMapper.parseObject(repository.save(entity), ProductDTO.class);
-        serviceOrder.updateOrders();
+        serviceOrder.updateTotalOrderValue();
         hateoas.links(dto);
         return dto;
     }
 
-    public void deleteProduct(Long id){
+    public void deleteProduct(Long id) {
         logger.info("Deleting a product!");
-        Product product = repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Product not found for this id"));
+        Product product = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found for this id"));
         repository.delete(product);
     }
 }

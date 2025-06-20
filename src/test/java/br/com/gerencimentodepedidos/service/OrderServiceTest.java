@@ -20,10 +20,10 @@ class OrderServiceTest {
     }
 
     @Test
-    void findAll() {
+    void findAllOrders() {
     }
 
     @Test
-    void deleteOrder() {
+    void deleteOrderById() {
     }
 }

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping("/api/v1/products")
 @Tag(name = "Product", description = "Endpoints for the Product class")
 public class ProductController implements ProductControllerDocs {
     @Autowired
@@ -21,13 +21,13 @@ public class ProductController implements ProductControllerDocs {
     @GetMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE})
     @Override
     public ProductDTO findById(@PathVariable("id") Long id) {
-        return services.findById(id);
+        return services.findProductById(id);
     }
 
     @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE})
     @Override
     public List<ProductDTO> findAll() {
-        return services.findAll();
+        return services.findAllProducts();
     }
 
     @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE},
@@ -35,21 +35,21 @@ public class ProductController implements ProductControllerDocs {
     )
     @Override
     public ProductDTO create(@RequestBody ProductDTO product) {
-        return services.create(product);
+        return services.createProduct(product);
     }
 
-    @PutMapping(value = "/update", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE},
+    @PutMapping(value = "/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE}
     )
     @Override
-    public ProductDTO update(@RequestBody ProductDTO product) {
-        return services.updateProduct(product);
+    public ProductDTO update(@PathVariable("id") Long id, @RequestBody ProductDTO product) {
+        return services.updateProductById(id, product);
     }
 
     @DeleteMapping(value = "/{id}")
     @Override
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
-        services.deleteProduct(id);
+        services.deleteProductById(id);
         return ResponseEntity.noContent().build();
     }
 }

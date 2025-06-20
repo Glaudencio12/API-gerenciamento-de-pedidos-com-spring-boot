@@ -8,7 +8,7 @@ spring:
     password: admin123
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: updateProductById
     properties:
       hibernate:
     show-sql: false

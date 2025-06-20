@@ -54,7 +54,7 @@ public interface OrderItemControllerDocs {
     )
     List<OrderItemDTO> findAll();
 
-    @Operation(summary = "Search an item", description = "Update an item by their respective ID passing the update via Body", tags = {"Order Item"},
+    @Operation(summary = "Search an item", description = "Update an item by their respective ID passing the updateProductById via Body", tags = {"Order Item"},
         responses = {
             @ApiResponse(description = "Success", responseCode = "200",
                 content = @Content(schema = @Schema(implementation = OrderItemDTO.class))
@@ -66,7 +66,7 @@ public interface OrderItemControllerDocs {
             @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
         }
     )
-    OrderItemDTO update(@RequestBody OrderItemDTO item);
+    OrderItemDTO update(@PathVariable("id") Long id, @RequestBody OrderItemDTO item);
     @Operation(summary = "Delete an item", description = "Delete an item from an order", tags = {"Order Item"},
             responses = {
                     @ApiResponse(description = "BadRequest", responseCode = "400", content = @Content),

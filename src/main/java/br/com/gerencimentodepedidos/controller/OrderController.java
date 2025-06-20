@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/orders")
+@RequestMapping("api/v1/orders")
 @Tag(name = "Order", description = "EndPoints para for the Order class")
 public class OrderController implements OrderControllerDocs {
     @Autowired
@@ -29,19 +29,19 @@ public class OrderController implements OrderControllerDocs {
     @GetMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE})
     @Override
     public OrderDTO findById(@PathVariable("id") Long id){
-        return services.findById(id);
+        return services.findOrderById(id);
     }
 
     @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE})
     @Override
     public List<OrderDTO> findAll(){
-        return services.findAll();
+        return services.findAllOrders();
     }
 
-    @DeleteMapping(value = "/deleteOrder/{id}")
+    @DeleteMapping(value = "/{id}")
     @Override
     public ResponseEntity<?> delete(@PathVariable("id") Long id){
-        services.deleteOrder(id);
+        services.deleteOrderById(id);
         return ResponseEntity.noContent().build();
     }
 }

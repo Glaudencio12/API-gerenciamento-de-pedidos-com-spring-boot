@@ -27,7 +27,7 @@ public class ProductService {
 
     private final Logger logger = LoggerFactory.getLogger(ProductService.class.getName());
 
-    public ProductDTO create(ProductDTO product) {
+    public ProductDTO createProduct(ProductDTO product) {
         logger.info("Creating a Product!");
         var entity = ObjectMapper.parseObject(product, Product.class);
         var dto = ObjectMapper.parseObject(repository.save(entity), ProductDTO.class);
@@ -35,7 +35,7 @@ public class ProductService {
         return dto;
     }
 
-    public ProductDTO findById(Long id) {
+    public ProductDTO findProductById(Long id) {
         logger.info("Finding a product");
         var entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found for this id"));
         var dto = ObjectMapper.parseObject(entity, ProductDTO.class);
@@ -43,16 +43,16 @@ public class ProductService {
         return dto;
     }
 
-    public List<ProductDTO> findAll() {
+    public List<ProductDTO> findAllProducts() {
         logger.info("Finding all products");
         var dto = ObjectMapper.parseListObjects(repository.findAll(), ProductDTO.class);
         dto.forEach(hateoas::links);
         return dto;
     }
 
-    public ProductDTO updateProduct(ProductDTO product) {
+    public ProductDTO updateProductById(Long id, ProductDTO product) {
         logger.info("Updating a Product!");
-        Product entity = repository.findById(product.getId()).orElseThrow(() -> new ResourceNotFoundException("Product not found for this id"));
+        Product entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found for this id"));
         entity.setName(product.getName());
         entity.setCategory(product.getCategory());
         entity.setPrice(product.getPrice());
@@ -62,7 +62,7 @@ public class ProductService {
         return dto;
     }
 
-    public void deleteProduct(Long id) {
+    public void deleteProductById(Long id) {
         logger.info("Deleting a product!");
         Product product = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found for this id"));
         repository.delete(product);

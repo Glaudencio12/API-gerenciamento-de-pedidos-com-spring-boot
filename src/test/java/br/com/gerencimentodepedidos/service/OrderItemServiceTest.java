@@ -11,22 +11,22 @@ class OrderItemServiceTest {
     }
 
     @Test
-    void createItemOrder() {
+    void createOrderItem() {
     }
 
     @Test
-    void findById() {
+    void findOrderItemById() {
     }
 
     @Test
-    void findAll() {
+    void findAllOrderItems() {
     }
 
     @Test
-    void updateItem() {
+    void updateOrderItemById() {
     }
 
     @Test
-    void deleteItem() {
+    void deleteOrderItemById() {
     }
 }

@@ -5,18 +5,12 @@ import br.com.gerencimentodepedidos.mocks.MockProduct;
 import br.com.gerencimentodepedidos.model.Product;
 import br.com.gerencimentodepedidos.repository.ProductRepository;
 import br.com.gerencimentodepedidos.utils.HateoasLinks;
-import io.swagger.v3.oas.annotations.extensions.Extension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.extension.Extensions;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +26,8 @@ class ProductServiceTest {
     ProductRepository repository;
     @Mock
     HateoasLinks hateoasLinks;
+    @Mock
+    OrderService orderService;
 
     @InjectMocks
     ProductService service;
@@ -52,107 +48,107 @@ class ProductServiceTest {
     }
 
     @Test
-    void create() {
+    void createProduct() {
         Product product = mock.mockProductEntity(1);
         ProductDTO productDTO = mock.mockProductDTO(1);
 
         when(repository.save(ArgumentMatchers.any(Product.class))).thenReturn(product);
         doCallRealMethod().when(hateoasLinks).links(any(ProductDTO.class));
 
-        var result = service.create(productDTO);
+        var result = service.createProduct(productDTO);
 
         assertNotNull(result);
         assertNotNull(result.getId());
         assertNotNull(result.getLinks());
 
-        assertLinks(result, "findById", "/products/1", "GET");
-        assertLinks(result, "findAll", "/products", "GET");
-        assertLinks(result, "create", "/products", "POST");
-        assertLinks(result, "update", "/products/update", "PUT");
-        assertLinks(result, "delete", "/products/1", "DELETE");
+        assertLinks(result, "findProductById", "/api/v1/products/1", "GET");
+        assertLinks(result, "findAllProducts", "/api/v1/products", "GET");
+        assertLinks(result, "createProduct", "/api/v1/products", "POST");
+        assertLinks(result, "updateProductById", "/api/v1/products/1", "PUT");
+        assertLinks(result, "deleteProductById", "/api/v1/products/1", "DELETE");
     }
 
     @Test
-    void findById() {
+    void findProductById() {
         Product product = mock.mockProductEntity(1);
         ProductDTO productDTO = mock.mockProductDTO(1);
 
         when(repository.findById(product.getId())).thenReturn(Optional.of(product));
         doCallRealMethod().when(hateoasLinks).links(productDTO);
 
-        var result = service.findById(1L);
+        var result = service.findProductById(1L);
 
         assertNotNull(result);
         assertNotNull(result.getId());
         assertNotNull(result.getLinks());
 
-        assertLinks(result, "findById", "/products/1", "GET");
-        assertLinks(result, "findAll", "/products", "GET");
-        assertLinks(result, "create", "/products", "POST");
-        assertLinks(result, "update", "/products/update", "PUT");
-        assertLinks(result, "delete", "/products/1", "DELETE");
+        assertLinks(result, "findProductById", "/api/v1/products/1", "GET");
+        assertLinks(result, "findAllProducts", "/api/v1/products", "GET");
+        assertLinks(result, "createProduct", "/api/v1/products", "POST");
+        assertLinks(result, "updateProductById", "/api/v1/products/1", "PUT");
+        assertLinks(result, "deleteProductById", "/api/v1/products/1", "DELETE");
     }
 
     @Test
-    void findAll() {
+    void findAllProducts() {
         List<Product> products = mock.mockListProducts();
         List<ProductDTO> productDTOS = mock.mockListProductsDTO();
 
         when(repository.findAll()).thenReturn(products);
         productDTOS.forEach(dto -> doCallRealMethod().when(hateoasLinks).links(dto));
 
-        List<ProductDTO> result = service.findAll();
+        List<ProductDTO> result = service.findAllProducts();
 
         assertNotNull(result);
         assertEquals(10, result.size());
 
         var productOne = result.get(1);
 
-        assertLinks(productOne, "findById", "/products/1", "GET");
-        assertLinks(productOne, "findAll", "/products", "GET");
-        assertLinks(productOne, "create", "/products", "POST");
-        assertLinks(productOne, "update", "/products/update", "PUT");
-        assertLinks(productOne, "delete", "/products/1", "DELETE");
+        assertLinks(productOne, "findProductById", "/api/v1/products/1", "GET");
+        assertLinks(productOne, "findAllProducts", "/api/v1/products", "GET");
+        assertLinks(productOne, "createProduct", "/api/v1/products", "POST");
+        assertLinks(productOne, "updateProductById", "/api/v1/products/1", "PUT");
+        assertLinks(productOne, "deleteProductById", "/api/v1/products/1", "DELETE");
 
         var productTwo = result.get(5);
 
-        assertLinks(productTwo, "findById", "/products/5", "GET");
-        assertLinks(productTwo, "findAll", "/products", "GET");
-        assertLinks(productTwo, "create", "/products", "POST");
-        assertLinks(productTwo, "update", "/products/update", "PUT");
-        assertLinks(productTwo, "delete", "/products/5", "DELETE");
+        assertLinks(productTwo, "findProductById", "/api/v1/products/5", "GET");
+        assertLinks(productTwo, "findAllProducts", "/api/v1/products", "GET");
+        assertLinks(productTwo, "createProduct", "/api/v1/products", "POST");
+        assertLinks(productTwo, "updateProductById", "/api/v1/products/5", "PUT");
+        assertLinks(productTwo, "deleteProductById", "/api/v1/products/5", "DELETE");
     }
 
     @Test
-    void updateProduct() {
+    void updateProductById() {
         Product product = mock.mockProductEntity(1);
         ProductDTO productDTO = mock.mockProductDTO(1);
 
-        when(repository.findById(product.getId())).thenReturn(Optional.of(product));
+        when(repository.findById(1L)).thenReturn(Optional.of(product));
         when(repository.save(product)).thenReturn(product);
         doCallRealMethod().when(hateoasLinks).links(productDTO);
 
-        var result = service.updateProduct(productDTO);
+        var result = service.updateProductById(1L, productDTO);
 
         assertNotNull(result);
         assertNotNull(result.getId());
         assertNotNull(result.getLinks());
 
-        assertLinks(result, "findById", "/products/1", "GET");
-        assertLinks(result, "findAll", "/products", "GET");
-        assertLinks(result, "create", "/products", "POST");
-        assertLinks(result, "update", "/products/update", "PUT");
-        assertLinks(result, "delete", "/products/1", "DELETE");
+        assertLinks(result, "findProductById", "/api/v1/products/1", "GET");
+        assertLinks(result, "findAllProducts", "/api/v1/products", "GET");
+        assertLinks(result, "createProduct", "/api/v1/products", "POST");
+        assertLinks(result, "updateProductById", "/api/v1/products/1", "PUT");
+        assertLinks(result, "deleteProductById", "/api/v1/products/1", "DELETE");
     }
 
     @Test
-    void deleteProduct() {
+    void deleteProductById() {
         Product product = mock.mockProductEntity(1);
 
         when(repository.findById(product.getId())).thenReturn(Optional.of(product));
         doNothing().when(repository).delete(product);
 
-        service.deleteProduct(product.getId());
+        service.deleteProductById(product.getId());
 
         verify(repository, times(1)).findById(anyLong());
         verify(repository, times(1)).delete(any(Product.class));

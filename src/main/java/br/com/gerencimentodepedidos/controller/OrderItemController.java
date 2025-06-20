@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/items")
+@RequestMapping("api/v1/items")
 @Tag(name = "Order Item", description = "EndPoints for the OrderItem class")
 public class OrderItemController implements OrderItemControllerDocs {
     @Autowired
@@ -26,7 +26,7 @@ public class OrderItemController implements OrderItemControllerDocs {
     )
     @Override
     public OrderItemDTO create(@PathVariable("orderId") Long orderId, @RequestBody OrderItemDTO item){
-        OrderItemDTO itemCreated = services.createItemOrder(orderId, item);
+        OrderItemDTO itemCreated = services.createOrderItem(orderId, item);
         serviceOrder.fullValue(orderId);
         return itemCreated;
     }
@@ -34,27 +34,27 @@ public class OrderItemController implements OrderItemControllerDocs {
     @GetMapping(value = "/{itemId}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE})
     @Override
     public OrderItemDTO findById(@PathVariable("itemId") Long id){
-        return services.findById(id);
+        return services.findOrderItemById(id);
     }
 
     @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE})
     @Override
     public List<OrderItemDTO> findAll(){
-        return services.findAll();
+        return services.findAllOrderItems();
     }
 
-    @PutMapping(value = "/update", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE},
+    @PutMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE},
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE}
     )
     @Override
-    public OrderItemDTO update(@RequestBody OrderItemDTO item){
-        return services.updateItem(item);
+    public OrderItemDTO update(@PathVariable("id") Long id, @RequestBody OrderItemDTO item){
+        return services.updateOrderItemById(id, item);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     @Override
     public ResponseEntity<?> delete(@PathVariable("id") Long id){
-        services.deleteItem(id);
+        services.deleteOrderItemById(id);
         return ResponseEntity.noContent().build();
     }
 

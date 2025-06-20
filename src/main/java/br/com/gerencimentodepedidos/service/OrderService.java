@@ -34,7 +34,7 @@ public class OrderService {
         return dto;
     }
 
-    public OrderDTO findById(Long id) {
+    public OrderDTO findOrderById(Long id) {
         logger.info("Find a order!");
         var entity = repositoryOrder.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order not found for this id"));
         var dto = ObjectMapper.parseObject(entity, OrderDTO.class);
@@ -46,7 +46,7 @@ public class OrderService {
         return dto;
     }
 
-    public List<OrderDTO> findAll() {
+    public List<OrderDTO> findAllOrders() {
         logger.info("Finding all orders!");
         var dtos = ObjectMapper.parseListObjects(repositoryOrder.findAll(), OrderDTO.class);
         dtos.forEach(orderDTO -> {
@@ -59,7 +59,7 @@ public class OrderService {
         return dtos;
     }
 
-    public void deleteOrder(Long id) {
+    public void deleteOrderById(Long id) {
         Order order = repositoryOrder.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order not found for this id"));
         repositoryOrder.delete(order);
     }

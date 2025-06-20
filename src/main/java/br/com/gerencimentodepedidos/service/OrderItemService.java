@@ -14,7 +14,6 @@ import br.com.gerencimentodepedidos.repository.ProductRepository;
 import br.com.gerencimentodepedidos.utils.HateoasLinks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,7 +36,7 @@ public class OrderItemService {
         this.hateoas = hateoas;
     }
 
-    public OrderItemDTO createItemOrder(Long orderId, OrderItemDTO item){
+    public OrderItemDTO createOrderItem(Long orderId, OrderItemDTO item){
         logger.info("Creating a order!");
         Order order = orderRepository.findById(orderId).orElseThrow(()-> new ResourceNotFoundException("Item not found for this id"));
         Product product = productRepository.findById(item.getProduct().getId()).orElseThrow(()-> new ResourceNotFoundException("Item not found for this id"));
@@ -50,7 +49,7 @@ public class OrderItemService {
         return dto;
     }
 
-    public OrderItemDTO findById(Long id){
+    public OrderItemDTO findOrderItemById(Long id){
         logger.info("Find a order!");
         var entity = repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Item not found for this id"));
         var dto = ObjectMapper.parseObject(entity, OrderItemDTO.class);
@@ -59,7 +58,7 @@ public class OrderItemService {
         return dto;
     }
 
-    public List<OrderItemDTO> findAll(){
+    public List<OrderItemDTO> findAllOrderItems(){
         logger.info("Finding all orders!");
         var dtos = ObjectMapper.parseListObjects(repository.findAll(), OrderItemDTO.class);
         dtos.forEach(orderItemDTO -> {
@@ -69,8 +68,8 @@ public class OrderItemService {
         return dtos;
     }
 
-    public OrderItemDTO updateItem(OrderItemDTO item){
-        OrderItem itemEntity = repository.findById(item.getId()).orElseThrow(()-> new ResourceNotFoundException("Order not found for this id"));
+    public OrderItemDTO updateOrderItemById(Long id, OrderItemDTO item){
+        OrderItem itemEntity = repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Order not found for this id"));
         itemEntity.setProduct(ObjectMapper.parseObject(item.getProduct(), Product.class));
         itemEntity.setQuantity(item.getQuantity());
         var entity = ObjectMapper.parseObject(itemEntity, OrderItem.class);
@@ -79,7 +78,7 @@ public class OrderItemService {
         return dto;
     }
 
-    public void deleteItem(Long id){
+    public void deleteOrderItemById(Long id){
         OrderItem item = repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Order not found for this id"));
         repository.delete(item);
         serviceOrder.updateTotalOrderValue();

@@ -55,7 +55,7 @@ public interface ProductControllerDocs {
     )
     ProductDTO create(@RequestBody ProductDTO product);
 
-    @Operation(summary = "Updates a product", description = "Update an product by their respective ID passing the update via Body", tags = {"Product"},
+    @Operation(summary = "Updates a product", description = "Update an product by their respective ID passing the updateProductById via Body", tags = {"Product"},
         responses = {
             @ApiResponse(description = "Success", responseCode = "200",
                 content = @Content(schema = @Schema(implementation = ProductDTO.class))
@@ -67,7 +67,7 @@ public interface ProductControllerDocs {
             @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
         }
     )
-    ProductDTO update(@RequestBody ProductDTO product);
+    ProductDTO update(@PathVariable("id") Long id, @RequestBody ProductDTO product);
 
     @Operation(summary = "Delete a product", description = "Delete a product by its respective ID", tags = {"Product"},
         responses = {

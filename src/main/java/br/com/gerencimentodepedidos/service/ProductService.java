@@ -16,12 +16,12 @@ import java.util.List;
 public class ProductService {
 
     private final ProductRepository repository;
-    private final OrderService serviceOrder;
+    private final OrderService OrderService;
     private final HateoasLinks hateoas;
 
     public ProductService(ProductRepository repository, OrderService serviceOrder, HateoasLinks hateoas) {
         this.repository = repository;
-        this.serviceOrder = serviceOrder;
+        this.OrderService = serviceOrder;
         this.hateoas = hateoas;
     }
 
@@ -46,7 +46,7 @@ public class ProductService {
     public List<ProductDTO> findAll() {
         logger.info("Finding all products");
         var dto = ObjectMapper.parseListObjects(repository.findAll(), ProductDTO.class);
-        dto.forEach(productDTO -> hateoas.links(productDTO));
+        dto.forEach(hateoas::links);
         return dto;
     }
 
@@ -57,7 +57,7 @@ public class ProductService {
         entity.setCategory(product.getCategory());
         entity.setPrice(product.getPrice());
         var dto = ObjectMapper.parseObject(repository.save(entity), ProductDTO.class);
-        serviceOrder.updateTotalOrderValue();
+        OrderService.updateTotalOrderValue();
         hateoas.links(dto);
         return dto;
     }

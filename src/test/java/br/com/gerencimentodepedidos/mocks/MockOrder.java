@@ -46,7 +46,7 @@ public class MockOrder {
 
     public List<Order> mockOrderList() {
         List<Order> orders = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 1; i <= 2; i++) {
             Order order = new Order();
             order.setId((long) i);
             List<OrderItem> items = mockItem.mockItemsList(order);
@@ -65,7 +65,7 @@ public class MockOrder {
 
     public List<OrderDTO> mockOrderDTOList() {
         List<OrderDTO> orders = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 1; i <= 2; i++) {
             OrderDTO order = new OrderDTO();
             order.setId((long) i);
             List<OrderItemDTO> items = mockItem.mockItemsDTOList(order);

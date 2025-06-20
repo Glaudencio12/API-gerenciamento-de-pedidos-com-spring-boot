@@ -100,23 +100,23 @@ class ProductServiceTest {
         List<ProductDTO> result = service.findAllProducts();
 
         assertNotNull(result);
-        assertEquals(10, result.size());
+        assertEquals(4, result.size());
 
         var productOne = result.get(1);
 
-        assertLinks(productOne, "findProductById", "/api/v1/products/1", "GET");
+        assertLinks(productOne, "findProductById", "/api/v1/products/2", "GET");
         assertLinks(productOne, "findAllProducts", "/api/v1/products", "GET");
         assertLinks(productOne, "createProduct", "/api/v1/products", "POST");
-        assertLinks(productOne, "updateProductById", "/api/v1/products/1", "PUT");
-        assertLinks(productOne, "deleteProductById", "/api/v1/products/1", "DELETE");
+        assertLinks(productOne, "updateProductById", "/api/v1/products/2", "PUT");
+        assertLinks(productOne, "deleteProductById", "/api/v1/products/2", "DELETE");
 
-        var productTwo = result.get(5);
+        var productTwo = result.get(3);
 
-        assertLinks(productTwo, "findProductById", "/api/v1/products/5", "GET");
+        assertLinks(productTwo, "findProductById", "/api/v1/products/4", "GET");
         assertLinks(productTwo, "findAllProducts", "/api/v1/products", "GET");
         assertLinks(productTwo, "createProduct", "/api/v1/products", "POST");
-        assertLinks(productTwo, "updateProductById", "/api/v1/products/5", "PUT");
-        assertLinks(productTwo, "deleteProductById", "/api/v1/products/5", "DELETE");
+        assertLinks(productTwo, "updateProductById", "/api/v1/products/4", "PUT");
+        assertLinks(productTwo, "deleteProductById", "/api/v1/products/4", "DELETE");
     }
 
     @Test

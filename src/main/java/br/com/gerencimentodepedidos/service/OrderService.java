@@ -16,11 +16,11 @@ import java.util.List;
 @Service
 public class OrderService {
 
-    private final OrderRepository repositoryOrder;
+    private final OrderRepository repository;
     private final HateoasLinks hateoas;
 
     public OrderService(OrderRepository repositoryOrder, HateoasLinks hateoas) {
-        this.repositoryOrder = repositoryOrder;
+        this.repository = repositoryOrder;
         this.hateoas = hateoas;
     }
 
@@ -29,14 +29,14 @@ public class OrderService {
     public OrderDTO createOrder(OrderDTO order) {
         logger.info("Creating a order!");
         var entity = ObjectMapper.parseObject(order, Order.class);
-        var dto = ObjectMapper.parseObject(repositoryOrder.save(entity), OrderDTO.class);
+        var dto = ObjectMapper.parseObject(repository.save(entity), OrderDTO.class);
         hateoas.links(dto);
         return dto;
     }
 
     public OrderDTO findOrderById(Long id) {
         logger.info("Find a order!");
-        var entity = repositoryOrder.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order not found for this id"));
+        var entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order not found for this id"));
         var dto = ObjectMapper.parseObject(entity, OrderDTO.class);
         dto.getItems().forEach(orderItemDTO -> {
             hateoas.links(orderItemDTO);
@@ -48,7 +48,7 @@ public class OrderService {
 
     public List<OrderDTO> findAllOrders() {
         logger.info("Finding all orders!");
-        var dtos = ObjectMapper.parseListObjects(repositoryOrder.findAll(), OrderDTO.class);
+        var dtos = ObjectMapper.parseListObjects(repository.findAll(), OrderDTO.class);
         dtos.forEach(orderDTO -> {
             orderDTO.getItems().forEach(orderItemDTO -> {
                 hateoas.links(orderItemDTO);
@@ -60,12 +60,12 @@ public class OrderService {
     }
 
     public void deleteOrderById(Long id) {
-        Order order = repositoryOrder.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order not found for this id"));
-        repositoryOrder.delete(order);
+        Order order = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order not found for this id"));
+        repository.delete(order);
     }
 
     public void fullValue(Long id) {
-        Order order = repositoryOrder.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order not found for this id"));
+        Order order = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order not found for this id"));
         double valueItem = 0;
         double valueFinalOrder = 0;
         for (OrderItem item : order.getItems()) {
@@ -76,11 +76,11 @@ public class OrderService {
         }
 
         order.setFullValue(valueFinalOrder);
-        repositoryOrder.save(order);
+        repository.save(order);
     }
 
     public void updateTotalOrderValue() {
-        List<Order> pedidos = repositoryOrder.findAll();
+        List<Order> pedidos = repository.findAll();
         for (Order pedido : pedidos) {
             fullValue(pedido.getId());
         }

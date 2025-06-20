@@ -20,7 +20,7 @@ public class MockItem {
 
     public List<OrderItem> mockItemsList(Order order) {
         List<OrderItem> items = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 1; i <= 4; i++) {
             Product product = mockProduct.mockProductEntity(i);
             OrderItem item = mockItemEntity(i, order, product, i + 1);
             items.add(item);
@@ -30,7 +30,7 @@ public class MockItem {
 
     public List<OrderItemDTO> mockItemsDTOList(OrderDTO order) {
         List<OrderItemDTO> items = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 1; i <= 4; i++) {
             ProductDTO product = mockProduct.mockProductDTO(i);
             OrderItemDTO item = mockItemDTO(i, order, product, i + 1);
             items.add(item);

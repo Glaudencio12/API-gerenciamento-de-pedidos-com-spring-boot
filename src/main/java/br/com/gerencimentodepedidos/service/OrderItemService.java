@@ -40,12 +40,13 @@ public class OrderItemService {
         logger.info("Creating a order!");
         Order order = orderRepository.findById(orderId).orElseThrow(()-> new ResourceNotFoundException("Item not found for this id"));
         Product product = productRepository.findById(item.getProduct().getId()).orElseThrow(()-> new ResourceNotFoundException("Item not found for this id"));
-        item.setOrderDTO(ObjectMapper.parseObject(order, OrderDTO.class));
+        item.setOrder(ObjectMapper.parseObject(order, OrderDTO.class));
         item.setProduct(ObjectMapper.parseObject(product, ProductDTO.class));
         item.setQuantity(item.getQuantity());
         var entity = ObjectMapper.parseObject(item, OrderItem.class);
         var dto = ObjectMapper.parseObject(repository.save(entity), OrderItemDTO.class);
         hateoas.links(dto);
+        hateoas.links(dto.getProduct());
         return dto;
     }
 
@@ -74,6 +75,7 @@ public class OrderItemService {
         itemEntity.setQuantity(item.getQuantity());
         var entity = ObjectMapper.parseObject(itemEntity, OrderItem.class);
         var dto = ObjectMapper.parseObject(repository.save(entity), OrderItemDTO.class);
+        hateoas.links(dto.getProduct());
         hateoas.links(dto);
         return dto;
     }

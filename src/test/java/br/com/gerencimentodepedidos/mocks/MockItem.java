@@ -50,7 +50,7 @@ public class MockItem {
     public OrderItemDTO mockItemDTO(Integer number, OrderDTO orderDTO, ProductDTO productDTO, int quantity) {
         OrderItemDTO item = new OrderItemDTO();
         item.setId(Long.valueOf(number));
-        item.setOrderDTO(orderDTO);
+        item.setOrder(orderDTO);
         item.setProduct(productDTO);
         item.setQuantity(quantity);
         return item;

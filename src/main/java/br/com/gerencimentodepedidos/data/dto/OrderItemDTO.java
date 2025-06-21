@@ -8,11 +8,11 @@ import org.springframework.hateoas.RepresentationModel;
 
 @NoArgsConstructor
 @Data
-@ToString(exclude = "orderDTO")
+@ToString(exclude = "order")
 public class OrderItemDTO extends RepresentationModel<OrderItemDTO> {
     private Long id;
     private ProductDTO product;
     private int quantity;
     @JsonIgnore
-    private OrderDTO orderDTO;
+    private OrderDTO order;
 }

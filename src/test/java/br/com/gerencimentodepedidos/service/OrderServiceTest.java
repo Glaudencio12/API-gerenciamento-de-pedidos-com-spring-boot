@@ -43,11 +43,21 @@ class OrderServiceTest {
     MockItem mockItem;
     MockProduct mockProduct;
 
+    Order order;
+    OrderDTO orderDTO;
+    List<Order> orders;
+    List<OrderDTO> orderDTOS;
+
     @BeforeEach
     void setUp() {
         mockProduct = new MockProduct();
         mockItem = new MockItem(mockProduct);
         mockOrder = new MockOrder(mockItem);
+
+        order = mockOrder.mockOrder(1);
+        orderDTO = mockOrder.mockOrderDTO(1);
+        orders = mockOrder.mockOrderList();
+        orderDTOS = mockOrder.mockOrderDTOList();
     }
 
     public static void assertLinks(OrderDTO dto, String rel, String href, String type) {
@@ -60,9 +70,6 @@ class OrderServiceTest {
 
     @Test
     void createOrder() {
-        Order order = mockOrder.mockOrder(1);
-        OrderDTO orderDTO = mockOrder.mockOrderDTO(1);
-
         when(repository.save(any(Order.class))).thenReturn(order);
         doCallRealMethod().when(hateoasLinks).links(any(OrderDTO.class));
 
@@ -79,9 +86,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void findById() {
-        Order order = mockOrder.mockOrder(1);
-
+    void findOrderById() {
         when(repository.findById(order.getId())).thenReturn(Optional.of(order));
         doCallRealMethod().when(hateoasLinks).links(any(ProductDTO.class));
         doCallRealMethod().when(hateoasLinks).links(any(OrderDTO.class));
@@ -104,14 +109,15 @@ class OrderServiceTest {
 
     @Test
     void findAllOrders() {
-        List<Order> orders = mockOrder.mockOrderList();
-
         when(repository.findAll()).thenReturn(orders);
         doCallRealMethod().when(hateoasLinks).links(any(OrderDTO.class));
         doCallRealMethod().when(hateoasLinks).links(any(ProductDTO.class));
         doCallRealMethod().when(hateoasLinks).links(any(OrderItemDTO.class));
 
         List<OrderDTO> result = service.findAllOrders();
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
 
         var orderItemOne = result.get(0);
         assertLinks(orderItemOne, "findOrderById", "/api/v1/orders/1", "GET");
@@ -131,8 +137,6 @@ class OrderServiceTest {
 
     @Test
     void deleteOrderById() {
-        Order order = mockOrder.mockOrder(1);
-
         when(repository.findById(order.getId())).thenReturn(Optional.of(order));
         doNothing().when(repository).delete(order);
 

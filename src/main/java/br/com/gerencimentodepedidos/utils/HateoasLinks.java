@@ -28,7 +28,7 @@ public class HateoasLinks {
             dto2.add(linkTo(methodOn(OrderController.class).create(dto2)).withRel("createOrder").withType("POST").withTitle("Create order"));
             dto2.add(linkTo(methodOn(OrderController.class).delete(dto2.getId())).withRel("deleteOrderById").withType("DELETE").withTitle("Delete order"));
         } else if (dto instanceof OrderItemDTO dtoItem) {
-            Long orderId = (dtoItem.getOrderDTO() != null) ? dtoItem.getOrderDTO().getId() : null;
+            Long orderId = (dtoItem.getOrder() != null) ? dtoItem.getOrder().getId() : null;
 
             if (orderId != null) {
                 dtoItem.add(linkTo(methodOn(OrderItemController.class).create(orderId, dtoItem)).withRel("createOrderItem").withType("POST").withTitle("Create item"));

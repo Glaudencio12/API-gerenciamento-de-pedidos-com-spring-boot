@@ -33,10 +33,19 @@ class ProductServiceTest {
     ProductService service;
 
     MockProduct mock;
+    Product product;
+    ProductDTO productDTO;
+    List<Product> products;
+    List<ProductDTO> productDTOS;
 
     @BeforeEach
     void setUp() {
         mock = new MockProduct();
+
+        product = mock.mockProductEntity(1);
+        productDTO = mock.mockProductDTO(1);
+        products = mock.mockListProducts();
+        productDTOS = mock.mockListProductsDTO();
     }
 
     public static void assertLinks(ProductDTO dto, String rel, String href, String type) {
@@ -49,9 +58,6 @@ class ProductServiceTest {
 
     @Test
     void createProduct() {
-        Product product = mock.mockProductEntity(1);
-        ProductDTO productDTO = mock.mockProductDTO(1);
-
         when(repository.save(ArgumentMatchers.any(Product.class))).thenReturn(product);
         doCallRealMethod().when(hateoasLinks).links(any(ProductDTO.class));
 
@@ -70,9 +76,6 @@ class ProductServiceTest {
 
     @Test
     void findProductById() {
-        Product product = mock.mockProductEntity(1);
-        ProductDTO productDTO = mock.mockProductDTO(1);
-
         when(repository.findById(product.getId())).thenReturn(Optional.of(product));
         doCallRealMethod().when(hateoasLinks).links(productDTO);
 
@@ -91,9 +94,6 @@ class ProductServiceTest {
 
     @Test
     void findAllProducts() {
-        List<Product> products = mock.mockListProducts();
-        List<ProductDTO> productDTOS = mock.mockListProductsDTO();
-
         when(repository.findAll()).thenReturn(products);
         productDTOS.forEach(dto -> doCallRealMethod().when(hateoasLinks).links(dto));
 
@@ -121,9 +121,6 @@ class ProductServiceTest {
 
     @Test
     void updateProductById() {
-        Product product = mock.mockProductEntity(1);
-        ProductDTO productDTO = mock.mockProductDTO(1);
-
         when(repository.findById(1L)).thenReturn(Optional.of(product));
         when(repository.save(product)).thenReturn(product);
         doCallRealMethod().when(hateoasLinks).links(productDTO);
@@ -143,8 +140,6 @@ class ProductServiceTest {
 
     @Test
     void deleteProductById() {
-        Product product = mock.mockProductEntity(1);
-
         when(repository.findById(product.getId())).thenReturn(Optional.of(product));
         doNothing().when(repository).delete(product);
 

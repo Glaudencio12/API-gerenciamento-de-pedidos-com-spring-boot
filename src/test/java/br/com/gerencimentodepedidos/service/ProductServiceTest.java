@@ -95,7 +95,7 @@ class ProductServiceTest {
     @Test
     void findAllProducts() {
         when(repository.findAll()).thenReturn(products);
-        productDTOS.forEach(dto -> doCallRealMethod().when(hateoasLinks).links(dto));
+        productDTOS.forEach(dto -> lenient().doCallRealMethod().when(hateoasLinks).links(dto));
 
         List<ProductDTO> result = service.findAllProducts();
 

@@ -1,6 +1,6 @@
 spring:
   application:
-    name = GerenciamentoDePedidos
+    name: GerenciamentoDePedidos
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/gerenciamento_pedidos?useTimezone=true&serverTimezone=UTC
@@ -8,11 +8,9 @@ spring:
     password: admin123
   jpa:
     hibernate:
-      ddl-auto: none
-    properties:
-      hibernate:
+      ddl-auto: update
     show-sql: false
     open-in-view: false
 logging:
   level:
-    root: WARN
+    root: INFO

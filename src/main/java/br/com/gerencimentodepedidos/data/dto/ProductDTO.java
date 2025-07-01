@@ -2,12 +2,14 @@ package br.com.gerencimentodepedidos.data.dto;
 
 import br.com.gerencimentodepedidos.enums.ProductCategory;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.hateoas.RepresentationModel;
 
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 public class ProductDTO extends RepresentationModel<ProductDTO> {
     private Long id;
     private String name;

@@ -1,0 +1,36 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql_gerenciamento_pedidos
+    restart: always
+    environment:
+      MYSQL_DATABASE: gerenciamento_pedidos
+      MYSQL_USER: usuario
+      MYSQL_PASSWORD: senha123
+      MYSQL_ROOT_PASSWORD: admin123
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - network_gerenciamento_pedidos
+
+  app:
+    image: glaudencio123/gerenciamento_de_pedidos:v1
+    container_name: app_gerenciamento_de_pedidos
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/gerenciamento_pedidos?useTimezone=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: usuario
+      SPRING_DATASOURCE_PASSWORD: senha123
+    networks:
+      - network_gerenciamento_pedidos
+
+volumes:
+  db_data:
+
+networks:
+  network_gerenciamento_pedidos:

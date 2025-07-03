@@ -15,6 +15,7 @@
 *.jar
 *.war
 *.ear
+*.env
 
 # Merge Files
 *.bak
@@ -43,4 +44,5 @@ blog/bin/
 hs_err_pid*
 /.metadata/
 
-*.txt
+# Files secrets
+application-secrets.yaml

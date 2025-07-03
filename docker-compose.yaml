@@ -5,27 +5,34 @@ services:
     restart: always
     environment:
       MYSQL_DATABASE: gerenciamento_pedidos
-      MYSQL_USER: usuario
-      MYSQL_PASSWORD: senha123
-      MYSQL_ROOT_PASSWORD: admin123
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     ports:
       - "3307:3306"
+    healthcheck:
+      test: ["CMD","mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     volumes:
       - db_data:/var/lib/mysql
     networks:
       - network_gerenciamento_pedidos
 
   app:
-    image: glaudencio123/gerenciamento_de_pedidos:v1
+    image: glaudencio123/gerenciamento-de-pedidos:v1
     container_name: app_gerenciamento_de_pedidos
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/gerenciamento_pedidos?useTimezone=true&serverTimezone=UTC
-      SPRING_DATASOURCE_USERNAME: usuario
-      SPRING_DATASOURCE_PASSWORD: senha123
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
     networks:
       - network_gerenciamento_pedidos
 

@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +14,7 @@ import java.util.List;
 
 public interface OrderControllerDocs {
     @Operation(summary = "Create a order", description = "Creates an order that will contain the requested items (products)", tags = {"Order"},
+
         responses = {
             @ApiResponse(description = "Success", responseCode = "200",
                 content = @Content(schema = @Schema(implementation = OrderItemDTO.class))

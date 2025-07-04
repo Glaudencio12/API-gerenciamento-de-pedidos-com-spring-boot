@@ -7,7 +7,6 @@ import org.springframework.hateoas.RepresentationModel;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString(exclude = "order")
 public class OrderItemDTO extends RepresentationModel<OrderItemDTO> {
     private Long id;
     private ProductDTO product;

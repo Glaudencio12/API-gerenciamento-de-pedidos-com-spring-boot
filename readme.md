@@ -223,14 +223,20 @@ Após inciar o projeto acesse via:
 
   ```
 3. **Inicie os Serviços com Docker Compose**
-* Navegue até a pasta raiz do projeto no seu terminal e execute o comando abaixo.
+* Navegue até a pasta raiz do projeto no seu terminal e execute os comandos abaixo.
     * **Importante:** Certifique-se de que os arquivos `docker-compose.yml` e o `Dockerfile` da aplicação estejam no diretório atual quando você abrir o terminal
    ```bash
-   docker compose up -d
+   docker compose pull
    ```
   Esse comando irá:
-    * Baixar a imagem da aplicação do Docker Hub (caso ainda não esteja localmente)
-    * Subir o banco MySQL e a aplicação conectados em rede
+    * Baixar a imagem da aplicação do Docker Hub
+   
+* Apoós executar o comando acima, execute:
+    ```bash
+   docker compose up -d
+   ```
+    Esse comando irá:
+     * Subir o banco MySQL e a aplicação conectados em rede
 
 
 4.  **Verifique a Execução dos Contêineres:**

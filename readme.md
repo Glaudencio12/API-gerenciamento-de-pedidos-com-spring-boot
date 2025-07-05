@@ -95,10 +95,6 @@ Gerenciamento-de-pedidos
 ### Observação
 * Todos os endpoints suportam os formatos: `application/json`, `application/xml` e `application/yaml`.
 
-Agora ficou claro! Você quer exemplos no `README.md` mostrando **como um usuário pode fazer requisições para cada endpoint**, ou seja, **exemplos de payloads JSON** que o frontend, Postman ou cURL poderiam enviar para sua API.
-
-Aqui está uma seção pronta para incluir no seu `README.md`, com exemplos de uso por entidade:
-
 ## Alguns exemplos de Requisições
 
 ### Criar Produto

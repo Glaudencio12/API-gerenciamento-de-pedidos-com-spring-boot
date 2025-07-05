@@ -1,6 +1,7 @@
 package br.com.gerencimentodepedidos.service;
 
 import br.com.gerencimentodepedidos.data.dto.ProductDTO;
+import br.com.gerencimentodepedidos.exception.RequestWithValueIsNullExeception;
 import br.com.gerencimentodepedidos.exception.ResourceNotFoundException;
 import br.com.gerencimentodepedidos.mapper.ObjectMapper;
 import br.com.gerencimentodepedidos.model.Product;
@@ -28,11 +29,16 @@ public class ProductService {
     private final Logger logger = LoggerFactory.getLogger(ProductService.class.getName());
 
     public ProductDTO createProduct(ProductDTO product) {
-        logger.info("Creating a Product!");
-        var entity = ObjectMapper.parseObject(product, Product.class);
-        var dto = ObjectMapper.parseObject(repository.save(entity), ProductDTO.class);
-        hateoas.links(dto);
-        return dto;
+        if ((product.getName() == null || product.getName().isEmpty()) || (product.getPrice() == 0.0) || (product.getCategory() == null)) {
+            throw new RequestWithValueIsNullExeception("Fields cannot be null or empty.");
+        }else {
+            logger.info("Creating a Product!");
+            product.setName(product.getName().trim());
+            var entity = ObjectMapper.parseObject(product, Product.class);
+            var dto = ObjectMapper.parseObject(repository.save(entity), ProductDTO.class);
+            hateoas.links(dto);
+            return dto;
+        }
     }
 
     public ProductDTO findProductById(Long id) {
@@ -51,15 +57,19 @@ public class ProductService {
     }
 
     public ProductDTO updateProductById(Long id, ProductDTO product) {
-        logger.info("Updating a Product!");
-        Product entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found for this id"));
-        entity.setName(product.getName());
-        entity.setCategory(product.getCategory());
-        entity.setPrice(product.getPrice());
-        var dto = ObjectMapper.parseObject(repository.save(entity), ProductDTO.class);
-        OrderService.updateTotalOrderValue();
-        hateoas.links(dto);
-        return dto;
+        if ((product.getName() == null || product.getName().isEmpty()) || (product.getPrice() == 0.0) || (product.getCategory() == null)) {
+            throw new RequestWithValueIsNullExeception("Fields cannot be null, empty or have spaces.");
+        } else {
+            logger.info("Updating a Product!");
+            Product entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found for this id"));
+            entity.setName(product.getName().trim());
+            entity.setCategory(product.getCategory());
+            entity.setPrice(product.getPrice());
+            var dto = ObjectMapper.parseObject(repository.save(entity), ProductDTO.class);
+            OrderService.updateTotalOrderValue();
+            hateoas.links(dto);
+            return dto;
+        }
     }
 
     public void deleteProductById(Long id) {

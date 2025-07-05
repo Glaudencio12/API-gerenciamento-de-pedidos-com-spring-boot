@@ -99,7 +99,7 @@ Agora ficou claro! Você quer exemplos no `README.md` mostrando **como um usuár
 
 Aqui está uma seção pronta para incluir no seu `README.md`, com exemplos de uso por entidade:
 
-## Exemplos de Requisições
+## Alguns exemplos de Requisições
 
 ### Criar Produto
 
@@ -111,6 +111,19 @@ Aqui está uma seção pronta para incluir no seu `README.md`, com exemplos de u
   "name": "Refrigerante",
   "price": 7.50,
   "category_product": "BEBIDA"
+}
+```
+### Buscar Produto por ID
+
+**Endpoint:** `GET /api/v1/products/{id}`
+Sem corpo (body). Retorna um JSON como:
+
+```json
+{
+  "id": 3,
+  "name": "Refrigerante",
+  "price": 7.5,
+  "category": "BEBIDA"
 }
 ```
 
@@ -140,7 +153,24 @@ Aqui está uma seção pronta para incluir no seu `README.md`, com exemplos de u
 }
 ```
 
----
+### Atualizar Item do pedido
+
+**Endpoint:** `PUT /api/v1/items/{id}`
+**Content-Type:** `application/json`
+**Exemplo para o item de id = 1:**
+
+```json
+{
+  "product" {
+      "id": 2
+   },
+  "quantity": 6
+}
+```
+### Excluir Pedido
+
+**Endpoint:** `DELETE /api/v1/orders/{id}`
+Sem corpo (body). Basta informar o `id` na URL.
 
 ### Atualizar Produto
 
@@ -155,25 +185,6 @@ Aqui está uma seção pronta para incluir no seu `README.md`, com exemplos de u
 }
 ```
 
-### Excluir Pedido
-
-**Endpoint:** `DELETE /api/v1/orders/{id}`
-Sem corpo (body). Basta informar o `id` na URL.
-
-### Buscar Produto por ID
-
-**Endpoint:** `GET /api/v1/products/{id}`
-Sem corpo (body). Retorna um JSON como:
-
-```json
-{
-  "id": 3,
-  "name": "Refrigerante",
-  "price": 7.5,
-  "category": "BEBIDA"
-}
-```
-
 ## Documentação dos Endpoints
 Todos os endpoints foram documentados com `Swagger/OpenAPI` disponível para visualização e testes interativos.
 Após inciar o projeto acesse via:
@@ -181,3 +192,59 @@ Após inciar o projeto acesse via:
    http://localhost:8080/swagger-ui/index.html
 ```
 
+## Como rodar a aplicação na sua máquina
+
+### Configuração do Ambiente
+
+### Pré-requisitos
+
+* Antes de começar, certifique-se de ter o [Docker Desktop](https://www.docker.com/products/docker-desktop/) e **em execução** em sua máquina.
+* [Postman](https://www.postman.com/downloads/) instalado para a realização de testes na aplicação ou se prefirir, pode realizar os testes via swagger
+
+### Passos para Iniciar o Projeto
+
+1.  **Obtenha os Arquivos do Projeto:**
+* **Recomendado - Via terminal do Git:** clone-o para sua máquina:
+    ```bash
+    git clone https://github.com/Glaudencio12/API-sistema-escolar-simples
+    ```
+2. **Configure as Variáveis de Ambiente**
+* Edite o arquivo `.env.example` com as credenciais desejadas para que o mysql possa funcionar dentro do container.
+
+* Exemplo de .env.example:
+  ```env
+    MYSQL_USER=usuario_exemplo
+    MYSQL_PASSWORD=senha_forte
+    MYSQL_ROOT_PASSWORD=admin_root
+    
+    SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/sistema_escolar?useTimezone=true&serverTimezone=UTC
+    SPRING_DATASOURCE_USERNAME=usuario_exemplo
+    SPRING_DATASOURCE_PASSWORD=senha_forte
+
+  ```
+3. **Inicie os Serviços com Docker Compose**
+* Navegue até a pasta raiz do projeto no seu terminal e execute o comando abaixo.
+    * **Importante:** Certifique-se de que os arquivos `docker-compose.yml` e o `Dockerfile` da aplicação estejam no diretório atual quando você abrir o terminal
+   ```bash
+   docker compose up -d
+   ```
+  Esse comando irá:
+    * Baixar a imagem da aplicação do Docker Hub (caso ainda não esteja localmente)
+    * Subir o banco MySQL e a aplicação conectados em rede
+
+
+4.  **Verifique a Execução dos Contêineres:**
+* Você pode confirmar que os contêineres estão rodando de duas maneiras:
+    * **Via Terminal:** Execute `docker ps` para ver uma lista dos contêineres ativos ou execute`docker container ls`, que terá o mesmo resultado 
+5.  **Acesse a Aplicação:**
+* Com os serviços em funcionamento, você pode testar a aplicação usando o Postaman ou o Swagger via: 
+```bash
+  http://localhost:8080/swagger-ui/index.html
+```
+
+### Gerenciamento dos Contêineres
+
+* **Para parar os serviços da aplicação execute:**
+    ```bash
+    docker compose stop
+    ```

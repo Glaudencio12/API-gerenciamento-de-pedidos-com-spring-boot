@@ -1,6 +1,5 @@
 *.class
 
-
 /node_modules
 
 # SSH Keys
@@ -15,7 +14,6 @@
 *.jar
 *.war
 *.ear
-*.env
 
 # Merge Files
 *.bak
@@ -46,3 +44,4 @@ hs_err_pid*
 
 # Files secrets
 application-secrets.yaml
+.env

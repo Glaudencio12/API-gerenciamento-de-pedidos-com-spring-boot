@@ -1,7 +1,6 @@
 package br.com.gerencimentodepedidos.service;
 
 import br.com.gerencimentodepedidos.data.dto.OrderDTO;
-import br.com.gerencimentodepedidos.exception.RequestWithValueIsNullExeception;
 import br.com.gerencimentodepedidos.exception.ResourceNotFoundException;
 import br.com.gerencimentodepedidos.mapper.ObjectMapper;
 import br.com.gerencimentodepedidos.model.Order;

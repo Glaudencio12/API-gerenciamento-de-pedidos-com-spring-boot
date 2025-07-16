@@ -5,6 +5,7 @@ import br.com.gerencimentodepedidos.data.dto.OrderItemDTO;
 import br.com.gerencimentodepedidos.service.OrderItemService;
 import br.com.gerencimentodepedidos.service.OrderService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,8 @@ public class OrderItemController implements OrderItemControllerDocs {
     @Autowired
     OrderService serviceOrder;
 
-    @PostMapping(value = "/order/{orderId}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE},
+    @PostMapping(value = "/order/{orderId}",
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE}
     )
     @Override
@@ -43,11 +45,12 @@ public class OrderItemController implements OrderItemControllerDocs {
         return services.findAllOrderItems();
     }
 
-    @PutMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE},
+    @PutMapping(value = "/{id}",
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE},
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE}
     )
     @Override
-    public OrderItemDTO update(@PathVariable("id") Long id, @RequestBody OrderItemDTO item){
+    public OrderItemDTO update(@PathVariable("id") Long id, @RequestBody @Valid OrderItemDTO item){
         return services.updateOrderItemById(id, item);
     }
 

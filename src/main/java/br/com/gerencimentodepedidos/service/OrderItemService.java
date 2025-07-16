@@ -3,7 +3,6 @@ package br.com.gerencimentodepedidos.service;
 import br.com.gerencimentodepedidos.data.dto.OrderDTO;
 import br.com.gerencimentodepedidos.data.dto.OrderItemDTO;
 import br.com.gerencimentodepedidos.data.dto.ProductDTO;
-import br.com.gerencimentodepedidos.exception.RequestWithValueIsNullExeception;
 import br.com.gerencimentodepedidos.exception.ResourceNotFoundException;
 import br.com.gerencimentodepedidos.mapper.ObjectMapper;
 import br.com.gerencimentodepedidos.model.Order;
@@ -37,34 +36,31 @@ public class OrderItemService {
         this.hateoas = hateoas;
     }
 
-    public OrderItemDTO createOrderItem(Long orderId, OrderItemDTO item){
-        if ((item.getProduct() == null) || (item.getQuantity() <= 0)) {
-            throw new RequestWithValueIsNullExeception("Fields cannot be null or empty.");
-        } else {
-            logger.info("Creating a order Item!");
-            Product product = productRepository.findById(item.getProduct().getId()).orElseThrow(() -> new ResourceNotFoundException("Item not found for this id"));
-            Order order = orderRepository.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Item not found for this id"));
-            item.setOrder(ObjectMapper.parseObject(order, OrderDTO.class));
-            item.setProduct(ObjectMapper.parseObject(product, ProductDTO.class));
-            item.setQuantity(item.getQuantity());
-            var entity = ObjectMapper.parseObject(item, OrderItem.class);
-            var dto = ObjectMapper.parseObject(repository.save(entity), OrderItemDTO.class);
-            hateoas.links(dto);
-            hateoas.links(dto.getProduct());
-            return dto;
-        }
+    public OrderItemDTO createOrderItem(Long orderId, OrderItemDTO item) {
+        logger.info("Creating a order Item!");
+        Product product = productRepository.findById(item.getProduct().getId()).orElseThrow(() -> new ResourceNotFoundException("Item not found for this id"));
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Item not found for this id"));
+        item.setOrder(ObjectMapper.parseObject(order, OrderDTO.class));
+        item.setProduct(ObjectMapper.parseObject(product, ProductDTO.class));
+        item.setQuantity(item.getQuantity());
+        var entity = ObjectMapper.parseObject(item, OrderItem.class);
+        var dto = ObjectMapper.parseObject(repository.save(entity), OrderItemDTO.class);
+        hateoas.links(dto);
+        hateoas.links(dto.getProduct());
+        return dto;
+
     }
 
-    public OrderItemDTO findOrderItemById(Long id){
+    public OrderItemDTO findOrderItemById(Long id) {
         logger.info("Find a order item!");
-        var entity = repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Item not found for this id"));
+        var entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Item not found for this id"));
         var dto = ObjectMapper.parseObject(entity, OrderItemDTO.class);
         hateoas.links(dto.getProduct());
         hateoas.links(dto);
         return dto;
     }
 
-    public List<OrderItemDTO> findAllOrderItems(){
+    public List<OrderItemDTO> findAllOrderItems() {
         logger.info("Finding all orders items!");
         var dtos = ObjectMapper.parseListObjects(repository.findAll(), OrderItemDTO.class);
         dtos.forEach(orderItemDTO -> {
@@ -74,24 +70,21 @@ public class OrderItemService {
         return dtos;
     }
 
-    public OrderItemDTO updateOrderItemById(Long id, OrderItemDTO item){
-        if ((item.getProduct() == null) || (item.getQuantity() <= 0)) {
-            throw new RequestWithValueIsNullExeception("Fields cannot be null or empty.");
-        } else {
-            logger.info("Updating the order item");
-            OrderItem itemEntity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order not found for this id"));
-            itemEntity.setProduct(ObjectMapper.parseObject(item.getProduct(), Product.class));
-            itemEntity.setQuantity(item.getQuantity());
-            var entity = ObjectMapper.parseObject(itemEntity, OrderItem.class);
-            var dto = ObjectMapper.parseObject(repository.save(entity), OrderItemDTO.class);
-            hateoas.links(dto.getProduct());
-            hateoas.links(dto);
-            return dto;
-        }
+    public OrderItemDTO updateOrderItemById(Long id, OrderItemDTO item) {
+        logger.info("Updating the order item");
+        OrderItem itemEntity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order not found for this id"));
+        itemEntity.setProduct(ObjectMapper.parseObject(item.getProduct(), Product.class));
+        itemEntity.setQuantity(item.getQuantity());
+        var entity = ObjectMapper.parseObject(itemEntity, OrderItem.class);
+        var dto = ObjectMapper.parseObject(repository.save(entity), OrderItemDTO.class);
+        hateoas.links(dto.getProduct());
+        hateoas.links(dto);
+        return dto;
+
     }
 
-    public void deleteOrderItemById(Long id){
-        OrderItem item = repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Order not found for this id"));
+    public void deleteOrderItemById(Long id) {
+        OrderItem item = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order not found for this id"));
         repository.delete(item);
         serviceOrder.updateTotalOrderValue();
     }

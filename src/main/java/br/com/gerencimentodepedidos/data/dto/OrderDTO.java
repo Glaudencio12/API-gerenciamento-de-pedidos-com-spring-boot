@@ -1,6 +1,9 @@
 package br.com.gerencimentodepedidos.data.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
@@ -13,9 +16,11 @@ import java.util.List;
 @Setter
 public class OrderDTO extends RepresentationModel<OrderDTO> {
     private Long id;
-    @NotNull
     private List<OrderItemDTO> items = new ArrayList<>();
+
     @JsonProperty("full_value")
-    @NotNull
+    @NotNull(message = "The total value is mandatory starting with 0.0")
+    @Max(value = 0, message = "The maximum value of entered is 0.0")
+    @DecimalMin(value = "0.0", message = "The minimum value of entered is 0.0")
     private double fullValue;
 }

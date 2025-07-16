@@ -2,9 +2,7 @@ package br.com.gerencimentodepedidos.data.dto;
 
 import br.com.gerencimentodepedidos.enums.ProductCategory;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,11 +13,15 @@ import org.springframework.hateoas.RepresentationModel;
 @Setter
 public class ProductDTO extends RepresentationModel<ProductDTO> {
     private Long id;
-    @NotBlank
+    @NotBlank(message = "The product name is mandatory")
+    @Size(min = 3, max = 80)
     private String name;
-    @NotNull
+
+    @NotNull(message = "The value is mandatory")
+    @DecimalMin(value = "0.1", message = "The value must be greater than zero")
     private double price;
-    @NotNull
+
     @JsonProperty("category_product")
+    @NotNull(message = "The category is mandatory")
     private ProductCategory category;
 }

@@ -1,4 +1,4 @@
-package br.com.gerencimentodepedidos.mocks;
+package br.com.gerencimentodepedidos.unitTests.mocks;
 
 import br.com.gerencimentodepedidos.data.dto.ProductDTO;
 import br.com.gerencimentodepedidos.enums.ProductCategory;

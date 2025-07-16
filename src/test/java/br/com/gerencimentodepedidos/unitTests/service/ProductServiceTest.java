@@ -1,7 +1,9 @@
-package br.com.gerencimentodepedidos.service;
+package br.com.gerencimentodepedidos.unitTests.service;
 
 import br.com.gerencimentodepedidos.data.dto.ProductDTO;
-import br.com.gerencimentodepedidos.mocks.MockProduct;
+import br.com.gerencimentodepedidos.service.OrderService;
+import br.com.gerencimentodepedidos.service.ProductService;
+import br.com.gerencimentodepedidos.unitTests.mocks.MockProduct;
 import br.com.gerencimentodepedidos.model.Product;
 import br.com.gerencimentodepedidos.repository.ProductRepository;
 import br.com.gerencimentodepedidos.utils.HateoasLinks;

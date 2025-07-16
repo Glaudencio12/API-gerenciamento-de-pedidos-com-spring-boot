@@ -1,11 +1,10 @@
+server:
+  port: 8888
 spring:
   application:
     name: GerenciamentoDePedidos
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${MYSQL_DB_URL}
-    username: ${MYSQL_DB_USERNAME}
-    password: ${MYSQL_DB_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: none

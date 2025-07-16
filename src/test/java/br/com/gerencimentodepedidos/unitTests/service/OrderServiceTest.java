@@ -1,21 +1,19 @@
-package br.com.gerencimentodepedidos.service;
+package br.com.gerencimentodepedidos.unitTests.service;
 
 import br.com.gerencimentodepedidos.data.dto.OrderDTO;
 import br.com.gerencimentodepedidos.data.dto.OrderItemDTO;
 import br.com.gerencimentodepedidos.data.dto.ProductDTO;
-import br.com.gerencimentodepedidos.mocks.MockItem;
-import br.com.gerencimentodepedidos.mocks.MockOrder;
-import br.com.gerencimentodepedidos.mocks.MockProduct;
+import br.com.gerencimentodepedidos.service.OrderService;
+import br.com.gerencimentodepedidos.unitTests.mocks.MockItem;
+import br.com.gerencimentodepedidos.unitTests.mocks.MockOrder;
+import br.com.gerencimentodepedidos.unitTests.mocks.MockProduct;
 import br.com.gerencimentodepedidos.model.Order;
-import br.com.gerencimentodepedidos.model.OrderItem;
-import br.com.gerencimentodepedidos.model.Product;
 import br.com.gerencimentodepedidos.repository.OrderRepository;
 import br.com.gerencimentodepedidos.utils.HateoasLinks;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;

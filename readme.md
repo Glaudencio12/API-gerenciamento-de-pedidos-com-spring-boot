@@ -212,13 +212,16 @@ Após inciar o projeto acesse via:
 
 * Exemplo de .env:
   ```env
-    MYSQL_USER=usuario_exemplo
-    MYSQL_PASSWORD=senha_forte
-    MYSQL_ROOT_PASSWORD=admin_root
+    MYSQL_DB_URL=jdbc:mysql://localhost:3306/nome_do_banco?useTimezone=true&serverTimezone=UTC
+    MYSQL_DB_USERNAME=usuario do banco
+    MYSQL_DB_PASSWORD=senha do banco
     
-    SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/sistema_escolar?useTimezone=true&serverTimezone=UTC
-    SPRING_DATASOURCE_USERNAME=usuario_exemplo
-    SPRING_DATASOURCE_PASSWORD=senha_forte
+    MYSQL_USER=usuario
+    MYSQL_PASSWORD=senha123
+    
+    SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/nome_do_banco?useTimezone=true&serverTimezone=UTC
+    SPRING_DATASOURCE_USERNAME=usuario
+    SPRING_DATASOURCE_PASSWORD=senha123
 
   ```
 3. **Inicie os Serviços com Docker Compose**

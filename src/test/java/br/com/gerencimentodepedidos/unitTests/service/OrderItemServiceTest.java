@@ -3,6 +3,7 @@ package br.com.gerencimentodepedidos.unitTests.service;
 import br.com.gerencimentodepedidos.data.dto.OrderDTO;
 import br.com.gerencimentodepedidos.data.dto.OrderItemDTO;
 import br.com.gerencimentodepedidos.data.dto.ProductDTO;
+import br.com.gerencimentodepedidos.exception.ResourceNotFoundException;
 import br.com.gerencimentodepedidos.service.OrderItemService;
 import br.com.gerencimentodepedidos.service.OrderService;
 import br.com.gerencimentodepedidos.unitTests.mocks.MockItem;
@@ -15,9 +16,7 @@ import br.com.gerencimentodepedidos.repository.OrderItemRepository;
 import br.com.gerencimentodepedidos.repository.OrderRepository;
 import br.com.gerencimentodepedidos.repository.ProductRepository;
 import br.com.gerencimentodepedidos.utils.HateoasLinks;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -84,6 +83,7 @@ class OrderItemServiceTest {
     }
 
     @Test
+    @DisplayName("Should create an order item and add correct HATEOAS links")
     void createOrderItem() {
         when(orderRepository.findById(order.getId())).thenReturn(Optional.of(order));
         when(productRepository.findById(product.getId())).thenReturn(Optional.of(product));
@@ -108,6 +108,7 @@ class OrderItemServiceTest {
     }
 
     @Test
+    @DisplayName("Should retrieve an order item by ID with correct HATEOAS links")
     void findOrderItemById() {
         when(repository.findById(orderItem.getId())).thenReturn(Optional.of(orderItem));
         doCallRealMethod().when(hateoasLinks).links(any(OrderItemDTO.class));
@@ -129,6 +130,7 @@ class OrderItemServiceTest {
     }
 
     @Test
+    @DisplayName("Should retrieve all order items with correct HATEOAS links for each item")
     void findAllOrderItems() {
         when(repository.findAll()).thenReturn(orderItems);
         doCallRealMethod().when(hateoasLinks).links(any(OrderItemDTO.class));
@@ -157,6 +159,7 @@ class OrderItemServiceTest {
     }
 
     @Test
+    @DisplayName("Should update an order item by ID and return updated HATEOAS links")
     void updateOrderItemById() {
         when(repository.findById(orderItem.getId())).thenReturn(Optional.of(orderItem));
         when(repository.save(orderItem)).thenReturn(orderItem);
@@ -179,6 +182,7 @@ class OrderItemServiceTest {
     }
 
     @Test
+    @DisplayName("Should delete an order item by ID successfully")
     void deleteOrderItemById() {
         when(repository.findById(orderItem.getId())).thenReturn(Optional.of(orderItem));
         doNothing().when(repository).delete(orderItem);
@@ -187,5 +191,47 @@ class OrderItemServiceTest {
 
         verify(repository, times(1)).findById(anyLong());
         verify(repository, times(1)).delete(any(OrderItem.class));
+    }
+
+    @Nested
+    @DisplayName("Exception Handling for OrderItem Operations")
+    class ExceptionOrderItem{
+
+        @Test
+        @DisplayName("Should throw ResourceNotFoundException when not finding, updating or deleting a  item")
+        void checksTheExceptionLaunch1(){
+            Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
+                service.findOrderItemById(0L);
+                service.updateOrderItemById(0L, null);
+                service.deleteOrderItemById(0L);
+            });
+
+            assertEquals("Item not found for this id", exception.getMessage());
+        }
+
+        @Test
+        @DisplayName("Should throw ResourceNotFoundException when product is not found")
+        void shouldThrowWhenProductNotFound() {
+            when(productRepository.findById(1L)).thenReturn(Optional.empty());
+
+            ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
+                service.createOrderItem(1L, orderItemDTO);
+            });
+
+            assertEquals("Product not found for this id", exception.getMessage());
+        }
+
+        @Test
+        @DisplayName("Should throw ResourceNotFoundException when order is not found")
+        void shouldThrowWhenOrderNotFound() {
+            when(productRepository.findById(1L)).thenReturn(Optional.of(product));
+            when(orderRepository.findById(1L)).thenReturn(Optional.empty());
+
+            ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
+                service.createOrderItem(1L, orderItemDTO);
+            });
+
+            assertEquals("Order not found for this id", exception.getMessage());
+        }
     }
 }

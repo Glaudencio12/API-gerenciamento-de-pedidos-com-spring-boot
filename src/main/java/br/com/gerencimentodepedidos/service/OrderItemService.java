@@ -38,8 +38,8 @@ public class OrderItemService {
 
     public OrderItemDTO createOrderItem(Long orderId, OrderItemDTO item) {
         logger.info("Creating a order Item!");
-        Product product = productRepository.findById(item.getProduct().getId()).orElseThrow(() -> new ResourceNotFoundException("Item not found for this id"));
-        Order order = orderRepository.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Item not found for this id"));
+        Product product = productRepository.findById(item.getProduct().getId()).orElseThrow(() -> new ResourceNotFoundException("Product not found for this id"));
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Order not found for this id"));
         item.setOrder(ObjectMapper.parseObject(order, OrderDTO.class));
         item.setProduct(ObjectMapper.parseObject(product, ProductDTO.class));
         item.setQuantity(item.getQuantity());
@@ -48,7 +48,6 @@ public class OrderItemService {
         hateoas.links(dto);
         hateoas.links(dto.getProduct());
         return dto;
-
     }
 
     public OrderItemDTO findOrderItemById(Long id) {
@@ -72,7 +71,7 @@ public class OrderItemService {
 
     public OrderItemDTO updateOrderItemById(Long id, OrderItemDTO item) {
         logger.info("Updating the order item");
-        OrderItem itemEntity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order not found for this id"));
+        OrderItem itemEntity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Item not found for this id"));
         itemEntity.setProduct(ObjectMapper.parseObject(item.getProduct(), Product.class));
         itemEntity.setQuantity(item.getQuantity());
         var entity = ObjectMapper.parseObject(itemEntity, OrderItem.class);
@@ -84,7 +83,7 @@ public class OrderItemService {
     }
 
     public void deleteOrderItemById(Long id) {
-        OrderItem item = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order not found for this id"));
+        OrderItem item = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Item not found for this id"));
         repository.delete(item);
         serviceOrder.updateTotalOrderValue();
     }

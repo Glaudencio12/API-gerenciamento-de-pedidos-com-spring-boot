@@ -1,6 +1,7 @@
 package br.com.gerencimentodepedidos.unitTests.service;
 
 import br.com.gerencimentodepedidos.data.dto.ProductDTO;
+import br.com.gerencimentodepedidos.exception.ResourceNotFoundException;
 import br.com.gerencimentodepedidos.service.OrderService;
 import br.com.gerencimentodepedidos.service.ProductService;
 import br.com.gerencimentodepedidos.unitTests.mocks.MockProduct;
@@ -8,6 +9,7 @@ import br.com.gerencimentodepedidos.model.Product;
 import br.com.gerencimentodepedidos.repository.ProductRepository;
 import br.com.gerencimentodepedidos.utils.HateoasLinks;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -59,6 +61,7 @@ class ProductServiceTest {
     }
 
     @Test
+    @DisplayName("Should create a product and add proper HATEOAS links")
     void createProduct() {
         when(repository.save(ArgumentMatchers.any(Product.class))).thenReturn(product);
         doCallRealMethod().when(hateoasLinks).links(any(ProductDTO.class));
@@ -77,6 +80,7 @@ class ProductServiceTest {
     }
 
     @Test
+    @DisplayName("Should retrieve a product by ID with correct HATEOAS links")
     void findProductById() {
         when(repository.findById(product.getId())).thenReturn(Optional.of(product));
         doCallRealMethod().when(hateoasLinks).links(productDTO);
@@ -95,6 +99,7 @@ class ProductServiceTest {
     }
 
     @Test
+    @DisplayName("Should retrieve all products with correct HATEOAS links")
     void findAllProducts() {
         when(repository.findAll()).thenReturn(products);
         productDTOS.forEach(dto -> lenient().doCallRealMethod().when(hateoasLinks).links(dto));
@@ -122,6 +127,7 @@ class ProductServiceTest {
     }
 
     @Test
+    @DisplayName("Should update a product by ID and return updated HATEOAS links")
     void updateProductById() {
         when(repository.findById(1L)).thenReturn(Optional.of(product));
         when(repository.save(product)).thenReturn(product);
@@ -141,6 +147,7 @@ class ProductServiceTest {
     }
 
     @Test
+    @DisplayName("Should delete a product by ID successfully")
     void deleteProductById() {
         when(repository.findById(product.getId())).thenReturn(Optional.of(product));
         doNothing().when(repository).delete(product);
@@ -149,5 +156,17 @@ class ProductServiceTest {
 
         verify(repository, times(1)).findById(anyLong());
         verify(repository, times(1)).delete(any(Product.class));
+    }
+
+    @Test
+    @DisplayName("Should throw ResourceNotFoundException when product is not found")
+    void checksTheExceptionLaunch(){
+        Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
+           service.findProductById(0L);
+           service.updateProductById(0L, null);
+           service.deleteProductById(0L);
+        });
+
+        assertEquals("Product not found for this id", exception.getMessage());
     }
 }

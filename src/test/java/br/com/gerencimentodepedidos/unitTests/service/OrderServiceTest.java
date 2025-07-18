@@ -3,6 +3,7 @@ package br.com.gerencimentodepedidos.unitTests.service;
 import br.com.gerencimentodepedidos.data.dto.OrderDTO;
 import br.com.gerencimentodepedidos.data.dto.OrderItemDTO;
 import br.com.gerencimentodepedidos.data.dto.ProductDTO;
+import br.com.gerencimentodepedidos.exception.ResourceNotFoundException;
 import br.com.gerencimentodepedidos.service.OrderService;
 import br.com.gerencimentodepedidos.unitTests.mocks.MockItem;
 import br.com.gerencimentodepedidos.unitTests.mocks.MockOrder;
@@ -11,6 +12,7 @@ import br.com.gerencimentodepedidos.model.Order;
 import br.com.gerencimentodepedidos.repository.OrderRepository;
 import br.com.gerencimentodepedidos.utils.HateoasLinks;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -67,6 +69,7 @@ class OrderServiceTest {
     }
 
     @Test
+    @DisplayName("Should create an order and add correct HATEOAS links")
     void createOrder() {
         when(repository.save(any(Order.class))).thenReturn(order);
         doCallRealMethod().when(hateoasLinks).links(any(OrderDTO.class));
@@ -84,6 +87,7 @@ class OrderServiceTest {
     }
 
     @Test
+    @DisplayName("Should retrieve an order by ID with HATEOAS links and verify item/product links")
     void findOrderById() {
         when(repository.findById(order.getId())).thenReturn(Optional.of(order));
         doCallRealMethod().when(hateoasLinks).links(any(ProductDTO.class));
@@ -106,6 +110,7 @@ class OrderServiceTest {
     }
 
     @Test
+    @DisplayName("Should retrieve all orders with proper HATEOAS links and verify item/product links")
     void findAllOrders() {
         when(repository.findAll()).thenReturn(orders);
         doCallRealMethod().when(hateoasLinks).links(any(OrderDTO.class));
@@ -134,6 +139,7 @@ class OrderServiceTest {
     }
 
     @Test
+    @DisplayName("Should delete an order by ID successfully")
     void deleteOrderById() {
         when(repository.findById(order.getId())).thenReturn(Optional.of(order));
         doNothing().when(repository).delete(order);
@@ -142,5 +148,17 @@ class OrderServiceTest {
 
         verify(repository, times(1)).findById(anyLong());
         verify(repository, times(1)).delete(any(Order.class));
+    }
+
+    @Test
+    @DisplayName("Should throw ResourceNotFoundException when order is not found")
+    void checksTheExceptionLaunch(){
+        Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
+            service.findOrderById(0L);
+            service.deleteOrderById(0L);
+            service.fullValue(0L);
+        });
+
+        assertEquals("Order not found for this id", exception.getMessage());
     }
 }

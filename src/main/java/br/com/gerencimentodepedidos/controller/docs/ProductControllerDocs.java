@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 public interface ProductControllerDocs {
-    @Operation(summary = "Find a product", description = "Seeks a product for its respective ID", tags = {"Product"},
+    @Operation(summary = "Find a product", description = "Seeks a product for its respective ID", tags = "Product",
         responses = {
             @ApiResponse(description = "Success", responseCode = "200",
                 content = @Content(schema = @Schema(implementation = ProductDTO.class))
@@ -26,7 +26,7 @@ public interface ProductControllerDocs {
     )
     ProductDTO findById(@PathVariable("id") Long id);
 
-    @Operation(summary = "Find all products", description = "Search all registered products", tags = {"Product"},
+    @Operation(summary = "Find all products", description = "Search all registered products", tags = "Product",
         responses = {
             @ApiResponse(description = "Success", responseCode = "200",
                 content = @Content(
@@ -42,7 +42,7 @@ public interface ProductControllerDocs {
     )
     List<ProductDTO> findAll();
 
-    @Operation(summary = "Create a product", description = "Create a product with the following data: name, price and category", tags = {"Product"},
+    @Operation(summary = "Create a product", description = "Create a product with the following data: name, price and category", tags = "Product",
         responses = {
             @ApiResponse(description = "Success", responseCode = "200",
                 content = @Content(schema = @Schema(implementation = ProductDTO.class))
@@ -56,7 +56,7 @@ public interface ProductControllerDocs {
     )
     ProductDTO create(@RequestBody @Valid ProductDTO product);
 
-    @Operation(summary = "Updates a product", description = "Update an product by their respective ID passing the updateProductById via Body", tags = {"Product"},
+    @Operation(summary = "Updates a product", description = "Update an product by their respective ID passing the updateProductById via Body", tags = "Product",
         responses = {
             @ApiResponse(description = "Success", responseCode = "200",
                 content = @Content(schema = @Schema(implementation = ProductDTO.class))
@@ -70,7 +70,7 @@ public interface ProductControllerDocs {
     )
     ProductDTO update(@PathVariable("id") Long id, @RequestBody @Valid ProductDTO product);
 
-    @Operation(summary = "Delete a product", description = "Delete a product by its respective ID", tags = {"Product"},
+    @Operation(summary = "Delete a product", description = "Delete a product by its respective ID", tags = "Product",
         responses = {
             @ApiResponse(description = "BadRequest", responseCode = "400", content = @Content),
             @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),

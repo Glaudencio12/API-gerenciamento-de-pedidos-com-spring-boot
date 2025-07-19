@@ -11,7 +11,7 @@ services:
     ports:
       - "3307:3306"
     healthcheck:
-      test: ["CMD","mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -30,9 +30,12 @@ services:
     ports:
       - "8080:8080"
     environment:
+      DOTENV_PATH: /app
       SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
       SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+    volumes:
+      - .env:/app/.env
     networks:
       - network_gerenciamento_pedidos
 

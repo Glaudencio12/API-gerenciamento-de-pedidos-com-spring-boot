@@ -27,7 +27,7 @@ public interface OrderItemControllerDocs {
     )
     OrderItemDTO create(@PathVariable("orderId") Long orderId, @RequestBody @Valid OrderItemDTO item);
 
-    @Operation(summary = "Search an item", description = "Seek an item by your respective ID", tags = {"Order Item"},
+    @Operation(summary = "Search an item", description = "Seek an item by your respective ID", tags = "Order Item",
         responses = {
             @ApiResponse(description = "Success", responseCode = "200",
                 content = @Content(schema = @Schema(implementation = OrderItemDTO.class))
@@ -41,7 +41,7 @@ public interface OrderItemControllerDocs {
     )
     OrderItemDTO findById(@PathVariable("itemId") Long id);
 
-    @Operation(summary = "Search all item", description = "Search all items added to orders", tags = {"Order Item"},
+    @Operation(summary = "Search all item", description = "Search all items added to orders", tags = "Order Item",
         responses = {
             @ApiResponse(description = "Success", responseCode = "200",
                 content = @Content(array = @ArraySchema(schema = @Schema(implementation = OrderItemDTO.class)))
@@ -55,7 +55,7 @@ public interface OrderItemControllerDocs {
     )
     List<OrderItemDTO> findAll();
 
-    @Operation(summary = "Search an item", description = "Update an item by their respective ID passing the updateProductById via Body", tags = {"Order Item"},
+    @Operation(summary = "Search an item", description = "Update an item by their respective ID passing the updateProductById via Body", tags = "Order Item",
         responses = {
             @ApiResponse(description = "Success", responseCode = "200",
                 content = @Content(schema = @Schema(implementation = OrderItemDTO.class))
@@ -68,7 +68,7 @@ public interface OrderItemControllerDocs {
         }
     )
     OrderItemDTO update(@PathVariable("id") Long id, @RequestBody @Valid OrderItemDTO item);
-    @Operation(summary = "Delete an item", description = "Delete an item from an order", tags = {"Order Item"},
+    @Operation(summary = "Delete an item", description = "Delete an item from an order", tags = "Order Item",
             responses = {
                     @ApiResponse(description = "BadRequest", responseCode = "400", content = @Content),
                     @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),

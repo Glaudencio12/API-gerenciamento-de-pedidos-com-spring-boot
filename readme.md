@@ -202,7 +202,7 @@ Após inciar o projeto acesse via:
 1.  **Obtenha os Arquivos do Projeto:**
 * **Recomendado - Via terminal do Git:** clone-o para sua máquina:
     ```bash
-    git clone https://github.com/Glaudencio12/API-sistema-escolar-simples
+    git clone https://github.com/Glaudencio12/API-gerenciamento-de-pedidos-com-spring-boot
     ```
 2. **Configure as Variáveis de Ambiente**
 * Crie um arquivo `.env` com as credenciais desejadas para que o mysql possa funcionar dentro do container.
@@ -211,24 +211,23 @@ Após inciar o projeto acesse via:
 <img alt="img.png" src="img.png" height="250"/> 
 
 * Exemplo de .env:
-  ```env
-    MYSQL_DB_URL=jdbc:mysql://localhost:3306/nome_do_banco?useTimezone=true&serverTimezone=UTC
-    MYSQL_DB_USERNAME=usuario do banco
-    MYSQL_DB_PASSWORD=senha do banco
-    
-    MYSQL_USER=usuario
-    MYSQL_PASSWORD=senha123
-    
-    SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/nome_do_banco?useTimezone=true&serverTimezone=UTC
-    SPRING_DATASOURCE_USERNAME=usuario
-    SPRING_DATASOURCE_PASSWORD=senha123
+```env
+MYSQL_DB_URL=jdbc:mysql://localhost:3306/gerenciamento_pedidos?useTimezone=true&serverTimezone=UTC  # URL de conexão local do MySQL
+MYSQL_DB_USERNAME=root  # Usuário root do MySQL
+MYSQL_DB_PASSWORD=admin123  # Senha do usuário root
 
-  ```
+MYSQL_USER=usuario  # Usuário criado no banco para a aplicação
+MYSQL_PASSWORD=senha123  # Senha do usuário criado para a aplicação
+
+SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/gerenciamento_pedidos?useTimezone=true&serverTimezone=UTC  # URL de conexão do banco dentro do container Docker
+SPRING_DATASOURCE_USERNAME=usuario  # Usuário usado pela aplicação para conectar ao banco
+SPRING_DATASOURCE_PASSWORD=senha123  # Senha usada pela aplicação para conectar ao banco
+```
 3. **Inicie os Serviços com Docker Compose**
 * Navegue até a pasta raiz do projeto no seu terminal e execute os comandos abaixo.
     * **Importante:** Certifique-se de que os arquivos `docker-compose.yml` e o `Dockerfile` da aplicação estejam no diretório atual quando você abrir o terminal
    ```bash
-   docker compose pull
+   docker compose pull glaudencio123/gerenciamento-de-pedidos:v4
    ```
   Esse comando irá:
     * Baixar a imagem da aplicação do Docker Hub

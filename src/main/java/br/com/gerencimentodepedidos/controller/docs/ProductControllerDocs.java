@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,7 +54,7 @@ public interface ProductControllerDocs {
             @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
         }
     )
-    ProductDTO create(@RequestBody ProductDTO product);
+    ProductDTO create(@RequestBody @Valid ProductDTO product);
 
     @Operation(summary = "Updates a product", description = "Update an product by their respective ID passing the updateProductById via Body", tags = {"Product"},
         responses = {
@@ -67,7 +68,7 @@ public interface ProductControllerDocs {
             @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
         }
     )
-    ProductDTO update(@PathVariable("id") Long id, @RequestBody ProductDTO product);
+    ProductDTO update(@PathVariable("id") Long id, @RequestBody @Valid ProductDTO product);
 
     @Operation(summary = "Delete a product", description = "Delete a product by its respective ID", tags = {"Product"},
         responses = {

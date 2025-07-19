@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +25,7 @@ public interface OrderItemControllerDocs {
             @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
         }
     )
-    OrderItemDTO create(@PathVariable("orderId") Long orderId, @RequestBody OrderItemDTO item);
+    OrderItemDTO create(@PathVariable("orderId") Long orderId, @RequestBody @Valid OrderItemDTO item);
 
     @Operation(summary = "Search an item", description = "Seek an item by your respective ID", tags = {"Order Item"},
         responses = {
@@ -66,7 +67,7 @@ public interface OrderItemControllerDocs {
             @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
         }
     )
-    OrderItemDTO update(@PathVariable("id") Long id, @RequestBody OrderItemDTO item);
+    OrderItemDTO update(@PathVariable("id") Long id, @RequestBody @Valid OrderItemDTO item);
     @Operation(summary = "Delete an item", description = "Delete an item from an order", tags = {"Order Item"},
             responses = {
                     @ApiResponse(description = "BadRequest", responseCode = "400", content = @Content),

@@ -13,6 +13,7 @@ import org.springframework.hateoas.RepresentationModel;
 @Setter
 public class ProductDTO extends RepresentationModel<ProductDTO> {
     private Long id;
+
     @NotBlank(message = "The product name is mandatory")
     @Size(min = 3, max = 80)
     private String name;

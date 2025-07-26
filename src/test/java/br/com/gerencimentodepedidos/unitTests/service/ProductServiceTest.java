@@ -160,7 +160,7 @@ class ProductServiceTest {
     void checksTheExceptionLaunch(){
         Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
            service.findProductById(0L);
-           service.updateProductById(0L, null);
+           service.updateProductById(0L, productDTO);
            service.deleteProductById(0L);
         });
 

@@ -2,6 +2,7 @@ package br.com.gerencimentodepedidos.controller.docs;
 
 import br.com.gerencimentodepedidos.data.dto.ProductDTO;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -24,7 +25,7 @@ public interface ProductControllerDocs {
             @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
         }
     )
-    ProductDTO findById(@PathVariable("id") Long id);
+    ProductDTO findById(@Parameter(description = "Id of the product", example = "1") @PathVariable("id") Long id);
 
     @Operation(summary = "Find all products", description = "Search all registered products", tags = "Product",
         responses = {
@@ -79,5 +80,5 @@ public interface ProductControllerDocs {
             @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
         }
     )
-    ResponseEntity<?> delete(@PathVariable("id") Long id);
+    ResponseEntity<?> delete(@Parameter(description = "Id of the product", example = "1") @PathVariable("id") Long id);
 }

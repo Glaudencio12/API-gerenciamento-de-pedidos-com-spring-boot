@@ -3,7 +3,6 @@ package br.com.gerencimentodepedidos.data.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
@@ -16,6 +15,7 @@ import java.util.List;
 @Setter
 public class OrderDTO extends RepresentationModel<OrderDTO> {
     private Long id;
+
     private List<OrderItemDTO> items = new ArrayList<>();
 
     @JsonProperty("full_value")

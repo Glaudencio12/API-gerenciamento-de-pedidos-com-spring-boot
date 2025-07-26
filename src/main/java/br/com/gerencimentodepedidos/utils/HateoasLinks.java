@@ -6,8 +6,6 @@ import br.com.gerencimentodepedidos.controller.ProductController;
 import br.com.gerencimentodepedidos.data.dto.OrderDTO;
 import br.com.gerencimentodepedidos.data.dto.OrderItemDTO;
 import br.com.gerencimentodepedidos.data.dto.ProductDTO;
-import br.com.gerencimentodepedidos.service.OrderItemService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;

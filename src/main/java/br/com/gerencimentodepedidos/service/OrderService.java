@@ -1,6 +1,7 @@
 package br.com.gerencimentodepedidos.service;
 
-import br.com.gerencimentodepedidos.data.dto.OrderDTO;
+import br.com.gerencimentodepedidos.data.dto.request.OrderRequestDTO;
+import br.com.gerencimentodepedidos.data.dto.response.OrderResponseDTO;
 import br.com.gerencimentodepedidos.exception.ResourceNotFoundException;
 import br.com.gerencimentodepedidos.mapper.ObjectMapper;
 import br.com.gerencimentodepedidos.model.Order;
@@ -26,18 +27,18 @@ public class OrderService {
 
     private final Logger logger = LoggerFactory.getLogger(OrderService.class.getName());
 
-    public OrderDTO createOrder(OrderDTO order) {
+    public OrderResponseDTO createOrder(OrderRequestDTO order) {
         logger.info("Creating a order!");
         var entity = ObjectMapper.parseObject(order, Order.class);
-        var dto = ObjectMapper.parseObject(repository.save(entity), OrderDTO.class);
+        var dto = ObjectMapper.parseObject(repository.save(entity), OrderResponseDTO.class);
         hateoas.links(dto);
         return dto;
     }
 
-    public OrderDTO findOrderById(Long id) {
+    public OrderResponseDTO findOrderById(Long id) {
         logger.info("Find a order!");
         var entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order not found for this id"));
-        var dto = ObjectMapper.parseObject(entity, OrderDTO.class);
+        var dto = ObjectMapper.parseObject(entity, OrderResponseDTO.class);
         dto.getItems().forEach(orderItemDTO -> {
             hateoas.links(orderItemDTO);
             hateoas.links(orderItemDTO.getProduct());
@@ -46,9 +47,9 @@ public class OrderService {
         return dto;
     }
 
-    public List<OrderDTO> findAllOrders() {
+    public List<OrderResponseDTO> findAllOrders() {
         logger.info("Finding all orders!");
-        var dtos = ObjectMapper.parseListObjects(repository.findAll(), OrderDTO.class);
+        var dtos = ObjectMapper.parseListObjects(repository.findAll(), OrderResponseDTO.class);
         dtos.forEach(orderDTO -> {
             orderDTO.getItems().forEach(orderItemDTO -> {
                 hateoas.links(orderItemDTO);

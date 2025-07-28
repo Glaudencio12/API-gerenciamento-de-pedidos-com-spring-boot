@@ -1,6 +1,7 @@
 package br.com.gerencimentodepedidos.unitTests.service;
 
-import br.com.gerencimentodepedidos.data.dto.ProductDTO;
+import br.com.gerencimentodepedidos.data.dto.request.ProductRequestDTO;
+import br.com.gerencimentodepedidos.data.dto.response.ProductResponseDTO;
 import br.com.gerencimentodepedidos.exception.ResourceNotFoundException;
 import br.com.gerencimentodepedidos.service.OrderService;
 import br.com.gerencimentodepedidos.service.ProductService;
@@ -35,21 +36,21 @@ class ProductServiceTest {
 
     MockProduct mock;
     Product product;
-    ProductDTO productDTO;
+    ProductRequestDTO productRequestDTO;
     List<Product> products;
-    List<ProductDTO> productDTOS;
+    List<ProductRequestDTO> productRequestDTOS;
 
     @BeforeEach
     void setUp() {
         mock = new MockProduct();
 
         product = mock.mockProductEntity(1);
-        productDTO = mock.mockProductDTO(1);
+        productRequestDTO = mock.mockProductDTO(1);
         products = mock.mockListProducts();
-        productDTOS = mock.mockListProductsDTO();
+        productRequestDTOS = mock.mockListProductsDTO();
     }
 
-    public static void assertLinks(ProductDTO dto, String rel, String href, String type) {
+    public static void assertLinks(ProductResponseDTO dto, String rel, String href, String type) {
         assertTrue(dto.getLinks().stream().anyMatch(link ->
                 link.getRel().value().equals(rel) &&
                 link.getHref().endsWith(href) &&
@@ -61,9 +62,9 @@ class ProductServiceTest {
     @DisplayName("Should create a product and add proper HATEOAS links")
     void createProduct() {
         when(repository.save(ArgumentMatchers.any(Product.class))).thenReturn(product);
-        doCallRealMethod().when(hateoasLinks).links(any(ProductDTO.class));
+        lenient().doCallRealMethod().when(hateoasLinks).links(any(ProductResponseDTO.class));
 
-        var result = service.createProduct(productDTO);
+        var result = service.createProduct(productRequestDTO);
 
         assertNotNull(result);
         assertNotNull(result.getId());
@@ -80,7 +81,7 @@ class ProductServiceTest {
     @DisplayName("Should retrieve a product by ID with correct HATEOAS links")
     void findProductById() {
         when(repository.findById(product.getId())).thenReturn(Optional.of(product));
-        doCallRealMethod().when(hateoasLinks).links(productDTO);
+        lenient().doCallRealMethod().when(hateoasLinks).links(any(ProductResponseDTO.class));
 
         var result = service.findProductById(1L);
 
@@ -99,9 +100,9 @@ class ProductServiceTest {
     @DisplayName("Should retrieve all products with correct HATEOAS links")
     void findAllProducts() {
         when(repository.findAll()).thenReturn(products);
-        productDTOS.forEach(dto -> lenient().doCallRealMethod().when(hateoasLinks).links(dto));
+        lenient().doCallRealMethod().when(hateoasLinks).links(any(ProductResponseDTO.class));
 
-        List<ProductDTO> result = service.findAllProducts();
+        List<ProductResponseDTO> result = service.findAllProducts();
 
         assertNotNull(result);
         assertEquals(4, result.size());
@@ -128,9 +129,9 @@ class ProductServiceTest {
     void updateProductById() {
         when(repository.findById(1L)).thenReturn(Optional.of(product));
         when(repository.save(product)).thenReturn(product);
-        doCallRealMethod().when(hateoasLinks).links(productDTO);
+        lenient().doCallRealMethod().when(hateoasLinks).links(any(ProductResponseDTO.class));
 
-        var result = service.updateProductById(1L, productDTO);
+        var result = service.updateProductById(1L, productRequestDTO);
 
         assertNotNull(result);
         assertNotNull(result.getId());
@@ -160,7 +161,7 @@ class ProductServiceTest {
     void checksTheExceptionLaunch(){
         Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
            service.findProductById(0L);
-           service.updateProductById(0L, productDTO);
+           service.updateProductById(0L, productRequestDTO);
            service.deleteProductById(0L);
         });
 

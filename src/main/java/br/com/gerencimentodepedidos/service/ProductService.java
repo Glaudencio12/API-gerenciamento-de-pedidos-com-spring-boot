@@ -1,6 +1,7 @@
 package br.com.gerencimentodepedidos.service;
 
-import br.com.gerencimentodepedidos.data.dto.ProductDTO;
+import br.com.gerencimentodepedidos.data.dto.request.ProductRequestDTO;
+import br.com.gerencimentodepedidos.data.dto.response.ProductResponseDTO;
 import br.com.gerencimentodepedidos.exception.ResourceNotFoundException;
 import br.com.gerencimentodepedidos.mapper.ObjectMapper;
 import br.com.gerencimentodepedidos.model.Product;
@@ -27,38 +28,38 @@ public class ProductService {
 
     private final Logger logger = LoggerFactory.getLogger(ProductService.class.getName());
 
-    public ProductDTO createProduct(ProductDTO product) {
+    public ProductResponseDTO createProduct(ProductRequestDTO product) {
         logger.info("Creating a Product!");
         product.setName(product.getName().trim());
         var entity = ObjectMapper.parseObject(product, Product.class);
-        var dto = ObjectMapper.parseObject(repository.save(entity), ProductDTO.class);
+        var dto = ObjectMapper.parseObject(repository.save(entity), ProductResponseDTO.class);
         hateoas.links(dto);
         return dto;
 
     }
 
-    public ProductDTO findProductById(Long id) {
+    public ProductResponseDTO findProductById(Long id) {
         logger.info("Finding a product");
         var entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found for this id"));
-        var dto = ObjectMapper.parseObject(entity, ProductDTO.class);
+        var dto = ObjectMapper.parseObject(entity, ProductResponseDTO.class);
         hateoas.links(dto);
         return dto;
     }
 
-    public List<ProductDTO> findAllProducts() {
+    public List<ProductResponseDTO> findAllProducts() {
         logger.info("Finding all products");
-        var dto = ObjectMapper.parseListObjects(repository.findAll(), ProductDTO.class);
+        var dto = ObjectMapper.parseListObjects(repository.findAll(), ProductResponseDTO.class);
         dto.forEach(hateoas::links);
         return dto;
     }
 
-    public ProductDTO updateProductById(Long id, ProductDTO product) {
+    public ProductResponseDTO updateProductById(Long id, ProductRequestDTO product) {
         logger.info("Updating a Product!");
         Product entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found for this id"));
         entity.setName(product.getName().trim());
         entity.setCategory(product.getCategory());
         entity.setPrice(product.getPrice());
-        var dto = ObjectMapper.parseObject(repository.save(entity), ProductDTO.class);
+        var dto = ObjectMapper.parseObject(repository.save(entity), ProductResponseDTO.class);
         OrderService.updateTotalOrderValue();
         hateoas.links(dto);
         return dto;

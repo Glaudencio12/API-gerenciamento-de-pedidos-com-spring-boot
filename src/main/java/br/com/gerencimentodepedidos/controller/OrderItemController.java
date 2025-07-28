@@ -1,7 +1,8 @@
 package br.com.gerencimentodepedidos.controller;
 
 import br.com.gerencimentodepedidos.controller.docs.OrderItemControllerDocs;
-import br.com.gerencimentodepedidos.data.dto.OrderItemDTO;
+import br.com.gerencimentodepedidos.data.dto.request.OrderItemRequestDTO;
+import br.com.gerencimentodepedidos.data.dto.response.OrderItemResponseDTO;
 import br.com.gerencimentodepedidos.service.OrderItemService;
 import br.com.gerencimentodepedidos.service.OrderService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,21 +28,21 @@ public class OrderItemController implements OrderItemControllerDocs {
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE}
     )
     @Override
-    public OrderItemDTO create(@PathVariable("orderId") Long orderId, @RequestBody OrderItemDTO item){
-        OrderItemDTO itemCreated = services.createOrderItem(orderId, item);
+    public OrderItemResponseDTO create(@PathVariable("orderId") Long orderId, @RequestBody @Valid OrderItemRequestDTO item){
+        OrderItemResponseDTO itemCreated = services.createOrderItem(orderId, item);
         serviceOrder.fullValue(orderId);
         return itemCreated;
     }
 
     @GetMapping(value = "/{itemId}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE})
     @Override
-    public OrderItemDTO findById(@PathVariable("itemId") Long id){
+    public OrderItemResponseDTO findById(@PathVariable("itemId") Long id){
         return services.findOrderItemById(id);
     }
 
     @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE})
     @Override
-    public List<OrderItemDTO> findAll(){
+    public List<OrderItemResponseDTO> findAll(){
         return services.findAllOrderItems();
     }
 
@@ -50,7 +51,7 @@ public class OrderItemController implements OrderItemControllerDocs {
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE}
     )
     @Override
-    public OrderItemDTO update(@PathVariable("id") Long id, @RequestBody @Valid OrderItemDTO item){
+    public OrderItemResponseDTO update(@PathVariable("id") Long id, @RequestBody @Valid OrderItemRequestDTO item){
         return services.updateOrderItemById(id, item);
     }
 

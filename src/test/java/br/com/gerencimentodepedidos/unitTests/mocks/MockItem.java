@@ -1,8 +1,6 @@
 package br.com.gerencimentodepedidos.unitTests.mocks;
 
-import br.com.gerencimentodepedidos.data.dto.OrderDTO;
-import br.com.gerencimentodepedidos.data.dto.OrderItemDTO;
-import br.com.gerencimentodepedidos.data.dto.ProductDTO;
+import br.com.gerencimentodepedidos.data.dto.request.OrderItemRequestDTO;
 import br.com.gerencimentodepedidos.model.Order;
 import br.com.gerencimentodepedidos.model.OrderItem;
 import br.com.gerencimentodepedidos.model.Product;
@@ -28,17 +26,21 @@ public class MockItem {
         return items;
     }
 
-    public List<OrderItemDTO> mockItemsDTOList(OrderDTO order) {
-        List<OrderItemDTO> items = new ArrayList<>();
+    public List<OrderItemRequestDTO> mockItemsDTOList(Order order) {
+        List<OrderItemRequestDTO> items = new ArrayList<>();
         for (int i = 1; i <= 4; i++) {
-            ProductDTO product = mockProduct.mockProductDTO(i);
-            OrderItemDTO item = mockItemDTO(i, order, product, i + 1);
+            Product product = mockProduct.mockProductEntity(i);
+            OrderItemRequestDTO item = mockItemDTO(i, order, product, i + 1);
             items.add(item);
         }
         return items;
     }
 
     public OrderItem mockItemEntity(Integer number, Order order, Product product, int quantity) {
+        if (number == null || quantity <= 0) {
+            throw new IllegalArgumentException("Number and quantity must be valid");
+        }
+        
         OrderItem item = new OrderItem();
         item.setId(Long.valueOf(number));
         item.setOrder(order);
@@ -47,11 +49,15 @@ public class MockItem {
         return item;
     }
 
-    public OrderItemDTO mockItemDTO(Integer number, OrderDTO orderDTO, ProductDTO productDTO, int quantity) {
-        OrderItemDTO item = new OrderItemDTO();
+    public OrderItemRequestDTO mockItemDTO(Integer number, Order order, Product product, int quantity) {
+        if (number == null || quantity <= 0) {
+            throw new IllegalArgumentException("Number and quantity must be valid");
+        }
+        
+        OrderItemRequestDTO item = new OrderItemRequestDTO();
         item.setId(Long.valueOf(number));
-        item.setOrder(orderDTO);
-        item.setProduct(productDTO);
+        item.setOrder(order);
+        item.setProduct(product);
         item.setQuantity(quantity);
         return item;
     }

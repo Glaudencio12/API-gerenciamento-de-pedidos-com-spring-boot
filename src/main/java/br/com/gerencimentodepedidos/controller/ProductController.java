@@ -1,7 +1,8 @@
 package br.com.gerencimentodepedidos.controller;
 
 import br.com.gerencimentodepedidos.controller.docs.ProductControllerDocs;
-import br.com.gerencimentodepedidos.data.dto.ProductDTO;
+import br.com.gerencimentodepedidos.data.dto.request.ProductRequestDTO;
+import br.com.gerencimentodepedidos.data.dto.response.ProductResponseDTO;
 import br.com.gerencimentodepedidos.service.ProductService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -21,13 +22,13 @@ public class ProductController implements ProductControllerDocs {
 
     @GetMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE})
     @Override
-    public ProductDTO findById(@PathVariable("id") Long id) {
+    public ProductResponseDTO findById(@PathVariable("id") Long id) {
         return services.findProductById(id);
     }
 
     @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE})
     @Override
-    public List<ProductDTO> findAll() {
+    public List<ProductResponseDTO> findAll() {
         return services.findAllProducts();
     }
 
@@ -36,7 +37,7 @@ public class ProductController implements ProductControllerDocs {
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE}
     )
     @Override
-    public ProductDTO create(@RequestBody @Valid ProductDTO product) {
+    public ProductResponseDTO create(@RequestBody @Valid ProductRequestDTO product) {
         return services.createProduct(product);
     }
 
@@ -45,7 +46,7 @@ public class ProductController implements ProductControllerDocs {
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE}
     )
     @Override
-    public ProductDTO update(@PathVariable("id") Long id, @Valid @RequestBody ProductDTO product) {
+    public ProductResponseDTO update(@PathVariable("id") Long id, @Valid @RequestBody ProductRequestDTO product) {
         return services.updateProductById(id, product);
     }
 

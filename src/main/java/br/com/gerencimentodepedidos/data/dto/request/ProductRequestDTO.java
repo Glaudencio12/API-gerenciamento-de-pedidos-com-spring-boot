@@ -1,17 +1,15 @@
-package br.com.gerencimentodepedidos.data.dto;
+package br.com.gerencimentodepedidos.data.dto.request;
 
 import br.com.gerencimentodepedidos.enums.ProductCategory;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.hateoas.RepresentationModel;
 
 @NoArgsConstructor
 @Getter
 @Setter
-public class ProductDTO extends RepresentationModel<ProductDTO> {
+public class ProductRequestDTO {
     private Long id;
 
     @NotBlank(message = "The product name is mandatory")
@@ -22,7 +20,6 @@ public class ProductDTO extends RepresentationModel<ProductDTO> {
     @DecimalMin(value = "0.1", message = "The value must be greater than zero")
     private double price;
 
-    @JsonProperty("category_product")
     @NotNull(message = "The category is mandatory")
     private ProductCategory category;
 }

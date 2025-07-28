@@ -1,7 +1,6 @@
 package br.com.gerencimentodepedidos.unitTests.mocks;
 
-import br.com.gerencimentodepedidos.data.dto.OrderDTO;
-import br.com.gerencimentodepedidos.data.dto.OrderItemDTO;
+import br.com.gerencimentodepedidos.data.dto.request.OrderRequestDTO;
 import br.com.gerencimentodepedidos.model.Order;
 import br.com.gerencimentodepedidos.model.OrderItem;
 
@@ -17,6 +16,10 @@ public class MockOrder {
     }
 
     public Order mockOrder(Integer number){
+        if (number == null) {
+            throw new IllegalArgumentException("Number cannot be null");
+        }
+        
         Order order = new Order();
         order.setId(Long.valueOf(number));
         List<OrderItem> items = mockItem.mockItemsList(order);
@@ -30,18 +33,26 @@ public class MockOrder {
         return order;
     }
 
-    public OrderDTO mockOrderDTO(Integer number){
-        OrderDTO orderDTO = new OrderDTO();
-        orderDTO.setId(Long.valueOf(number));
-        List<OrderItemDTO> items = mockItem.mockItemsDTOList(orderDTO);
-        orderDTO.setItems(items);
+    public OrderRequestDTO mockOrderDTO(Integer number){
+        if (number == null) {
+            throw new IllegalArgumentException("Number cannot be null");
+        }
+        
+        OrderRequestDTO orderRequestDTO = new OrderRequestDTO();
+        orderRequestDTO.setId(Long.valueOf(number));
+        
+        // Criar uma entidade Order para usar nos items
+        Order order = new Order();
+        order.setId(Long.valueOf(number));
+        List<OrderItem> items = mockItem.mockItemsList(order);
+        orderRequestDTO.setItems(items);
 
         double total = 0.0;
-        for (OrderItemDTO item : items) {
+        for (OrderItem item : items) {
             total += item.getProduct().getPrice() * item.getQuantity();
         }
-        orderDTO.setFullValue(total);
-        return orderDTO;
+        orderRequestDTO.setFullValue(total);
+        return orderRequestDTO;
     }
 
     public List<Order> mockOrderList() {
@@ -63,16 +74,20 @@ public class MockOrder {
         return orders;
     }
 
-    public List<OrderDTO> mockOrderDTOList() {
-        List<OrderDTO> orders = new ArrayList<>();
+    public List<OrderRequestDTO> mockOrderDTOList() {
+        List<OrderRequestDTO> orders = new ArrayList<>();
         for (int i = 1; i <= 2; i++) {
-            OrderDTO order = new OrderDTO();
+            OrderRequestDTO order = new OrderRequestDTO();
             order.setId((long) i);
-            List<OrderItemDTO> items = mockItem.mockItemsDTOList(order);
+            
+            // Criar uma entidade Order para usar nos items
+            Order orderEntity = new Order();
+            orderEntity.setId((long) i);
+            List<OrderItem> items = mockItem.mockItemsList(orderEntity);
             order.setItems(items);
 
             double total = 0.0;
-            for (OrderItemDTO item : items) {
+            for (OrderItem item : items) {
                 total += item.getProduct().getPrice() * item.getQuantity();
             }
             order.setFullValue(total);

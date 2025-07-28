@@ -1,6 +1,7 @@
 package br.com.gerencimentodepedidos.controller.docs;
 
-import br.com.gerencimentodepedidos.data.dto.ProductDTO;
+import br.com.gerencimentodepedidos.data.dto.request.ProductRequestDTO;
+import br.com.gerencimentodepedidos.data.dto.response.ProductResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -16,7 +17,7 @@ public interface ProductControllerDocs {
     @Operation(summary = "Find a product", description = "Seeks a product for its respective ID", tags = "Product",
         responses = {
             @ApiResponse(description = "Success", responseCode = "200",
-                content = @Content(schema = @Schema(implementation = ProductDTO.class))
+                content = @Content(schema = @Schema(implementation = ProductRequestDTO.class))
             ),
             @ApiResponse(description = "BadRequest", responseCode = "400", content = @Content),
             @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
@@ -25,13 +26,13 @@ public interface ProductControllerDocs {
             @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
         }
     )
-    ProductDTO findById(@Parameter(description = "Id of the product", example = "1") @PathVariable("id") Long id);
+    ProductResponseDTO findById(@Parameter(description = "Id of the product", example = "1") @PathVariable("id") Long id);
 
     @Operation(summary = "Find all products", description = "Search all registered products", tags = "Product",
         responses = {
             @ApiResponse(description = "Success", responseCode = "200",
                 content = @Content(
-                    array = @ArraySchema(arraySchema = @Schema(implementation = ProductDTO.class))
+                    array = @ArraySchema(arraySchema = @Schema(implementation = ProductRequestDTO.class))
                 )
             ),
             @ApiResponse(description = "BadRequest", responseCode = "400", content = @Content),
@@ -41,12 +42,12 @@ public interface ProductControllerDocs {
             @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
         }
     )
-    List<ProductDTO> findAll();
+    List<ProductResponseDTO> findAll();
 
     @Operation(summary = "Create a product", description = "Create a product with the following data: name, price and category", tags = "Product",
         responses = {
             @ApiResponse(description = "Success", responseCode = "200",
-                content = @Content(schema = @Schema(implementation = ProductDTO.class))
+                content = @Content(schema = @Schema(implementation = ProductRequestDTO.class))
             ),
             @ApiResponse(description = "BadRequest", responseCode = "400", content = @Content),
             @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
@@ -55,12 +56,12 @@ public interface ProductControllerDocs {
             @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
         }
     )
-    ProductDTO create(@RequestBody @Valid ProductDTO product);
+    ProductResponseDTO create(@RequestBody @Valid ProductRequestDTO product);
 
     @Operation(summary = "Updates a product", description = "Update an product by their respective ID passing the updateProductById via Body", tags = "Product",
         responses = {
             @ApiResponse(description = "Success", responseCode = "200",
-                content = @Content(schema = @Schema(implementation = ProductDTO.class))
+                content = @Content(schema = @Schema(implementation = ProductRequestDTO.class))
             ),
             @ApiResponse(description = "BadRequest", responseCode = "400", content = @Content),
             @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
@@ -69,7 +70,7 @@ public interface ProductControllerDocs {
             @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
         }
     )
-    ProductDTO update(@PathVariable("id") Long id, @RequestBody @Valid ProductDTO product);
+    ProductResponseDTO update(@PathVariable("id") Long id, @RequestBody @Valid ProductRequestDTO product);
 
     @Operation(summary = "Delete a product", description = "Delete a product by its respective ID", tags = "Product",
         responses = {

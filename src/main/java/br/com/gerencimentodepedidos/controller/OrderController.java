@@ -1,7 +1,8 @@
 package br.com.gerencimentodepedidos.controller;
 
 import br.com.gerencimentodepedidos.controller.docs.OrderControllerDocs;
-import br.com.gerencimentodepedidos.data.dto.OrderDTO;
+import br.com.gerencimentodepedidos.data.dto.request.OrderRequestDTO;
+import br.com.gerencimentodepedidos.data.dto.response.OrderResponseDTO;
 import br.com.gerencimentodepedidos.service.OrderService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -24,19 +25,19 @@ public class OrderController implements OrderControllerDocs {
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE}
     )
     @Override
-    public OrderDTO create(@RequestBody @Valid OrderDTO order){
+    public OrderResponseDTO create(@RequestBody @Valid OrderRequestDTO order){
         return services.createOrder(order);
     }
 
     @GetMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE})
     @Override
-    public OrderDTO findById(@PathVariable("id") Long id){
+    public OrderResponseDTO findById(@PathVariable("id") Long id){
         return services.findOrderById(id);
     }
 
     @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE})
     @Override
-    public List<OrderDTO> findAll(){
+    public List<OrderResponseDTO> findAll(){
         return services.findAllOrders();
     }
 

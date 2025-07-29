@@ -17,7 +17,7 @@ public interface ProductControllerDocs {
     @Operation(summary = "Find a product", description = "Seeks a product for its respective ID", tags = "Product",
         responses = {
             @ApiResponse(description = "Success", responseCode = "200",
-                content = @Content(schema = @Schema(implementation = ProductRequestDTO.class))
+                content = @Content(schema = @Schema(implementation = ProductResponseDTO.class))
             ),
             @ApiResponse(description = "BadRequest", responseCode = "400", content = @Content),
             @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
@@ -31,13 +31,11 @@ public interface ProductControllerDocs {
     @Operation(summary = "Find all products", description = "Search all registered products", tags = "Product",
         responses = {
             @ApiResponse(description = "Success", responseCode = "200",
-                content = @Content(
-                    array = @ArraySchema(arraySchema = @Schema(implementation = ProductRequestDTO.class))
-                )
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = ProductResponseDTO.class)))
             ),
             @ApiResponse(description = "BadRequest", responseCode = "400", content = @Content),
             @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
-            @ApiResponse(description = "Unauthorized", responseCode = "402", content = @Content),
+            @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
             @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
             @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
         }
@@ -47,11 +45,11 @@ public interface ProductControllerDocs {
     @Operation(summary = "Create a product", description = "Create a product with the following data: name, price and category", tags = "Product",
         responses = {
             @ApiResponse(description = "Success", responseCode = "200",
-                content = @Content(schema = @Schema(implementation = ProductRequestDTO.class))
+                content = @Content(schema = @Schema(implementation = ProductResponseDTO.class))
             ),
             @ApiResponse(description = "BadRequest", responseCode = "400", content = @Content),
             @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
-            @ApiResponse(description = "Unauthorized", responseCode = "402", content = @Content),
+            @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
             @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
             @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
         }
@@ -61,22 +59,22 @@ public interface ProductControllerDocs {
     @Operation(summary = "Updates a product", description = "Update an product by their respective ID passing the updateProductById via Body", tags = "Product",
         responses = {
             @ApiResponse(description = "Success", responseCode = "200",
-                content = @Content(schema = @Schema(implementation = ProductRequestDTO.class))
+                content = @Content(schema = @Schema(implementation = ProductResponseDTO.class))
             ),
             @ApiResponse(description = "BadRequest", responseCode = "400", content = @Content),
             @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
-            @ApiResponse(description = "Unauthorized", responseCode = "402", content = @Content),
+            @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
             @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
             @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
         }
     )
-    ProductResponseDTO update(@PathVariable("id") Long id, @RequestBody @Valid ProductRequestDTO product);
+    ProductResponseDTO update(@Parameter(description = "Id of the product", example = "1") @PathVariable("id") Long id, @RequestBody @Valid ProductRequestDTO product);
 
     @Operation(summary = "Delete a product", description = "Delete a product by its respective ID", tags = "Product",
         responses = {
             @ApiResponse(description = "BadRequest", responseCode = "400", content = @Content),
             @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
-            @ApiResponse(description = "Unauthorized", responseCode = "402", content = @Content),
+            @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
             @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
             @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
         }

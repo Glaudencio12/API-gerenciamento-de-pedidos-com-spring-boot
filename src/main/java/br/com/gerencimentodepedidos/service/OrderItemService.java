@@ -53,14 +53,15 @@ public class OrderItemService {
         productDTO.setId(product.getId());
         productDTO.setName(product.getName());
         productDTO.setPrice(product.getPrice());
+        productDTO.setCategory(product.getCategory());
         hateoas.links(productDTO);
 
         OrderItemResponseDTO responseDTO = new OrderItemResponseDTO();
         responseDTO.setId(item.getId());
         responseDTO.setProduct(productDTO);
         responseDTO.setQuantity(item.getQuantity());
-
         hateoas.links(responseDTO);
+
         return responseDTO;
     }
 

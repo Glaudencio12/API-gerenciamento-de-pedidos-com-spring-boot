@@ -1,6 +1,7 @@
 package br.com.gerencimentodepedidos.data.dto.response;
 
 import br.com.gerencimentodepedidos.enums.ProductCategory;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

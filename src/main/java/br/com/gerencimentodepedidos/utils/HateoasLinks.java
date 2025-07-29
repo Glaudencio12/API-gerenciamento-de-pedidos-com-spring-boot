@@ -30,12 +30,9 @@ public class HateoasLinks {
         } else if (dto instanceof OrderItemResponseDTO dtoItem) {
             dtoItem.add(linkTo(methodOn(OrderItemController.class).findById(dtoItem.getId())).withRel("findOrderItemById").withType("GET").withTitle("Search for item"));
             dtoItem.add(linkTo(methodOn(OrderItemController.class).findAll()).withRel("findAllOrderItems").withType("GET").withTitle("Search for all items"));
+            dtoItem.add(linkTo(methodOn(OrderItemController.class).create(null)).withRel("createOrderItem").withType("POST").withTitle("Create item"));
             dtoItem.add(linkTo(methodOn(OrderItemController.class).update(dtoItem.getId(), null)).withRel("updateOrderItemById").withType("PUT").withTitle("Update item"));
             dtoItem.add(linkTo(methodOn(OrderItemController.class).delete(dtoItem.getId())).withRel("deleteOrderItemById").withType("DELETE").withTitle("Delete item"));
-
-            if (dtoItem.getOrder() != null && dtoItem.getOrder().getId() != null) {
-                dtoItem.add(linkTo(methodOn(OrderItemController.class).create(dtoItem.getOrder().getId(), null)).withRel("createOrderItem").withType("POST").withTitle("Create item"));
-            }
         }
     }
 }

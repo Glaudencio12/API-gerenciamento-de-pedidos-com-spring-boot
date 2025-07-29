@@ -26,7 +26,7 @@ public interface OrderItemControllerDocs {
             @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
         }
     )
-    OrderItemResponseDTO create(@PathVariable("orderId") Long orderId, @RequestBody @Valid OrderItemRequestDTO item);
+    OrderItemResponseDTO create(@RequestBody @Valid OrderItemRequestDTO item);
 
     @Operation(summary = "Search an item", description = "Seek an item by your respective ID", tags = "Order Item",
         responses = {

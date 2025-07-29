@@ -1,6 +1,8 @@
 package br.com.gerencimentodepedidos.unitTests.mocks;
 
+import br.com.gerencimentodepedidos.data.dto.request.OrderItemRequestDTO;
 import br.com.gerencimentodepedidos.data.dto.request.OrderRequestDTO;
+import br.com.gerencimentodepedidos.data.dto.response.OrderItemResponseDTO;
 import br.com.gerencimentodepedidos.model.Order;
 import br.com.gerencimentodepedidos.model.OrderItem;
 
@@ -40,15 +42,15 @@ public class MockOrder {
         
         OrderRequestDTO orderRequestDTO = new OrderRequestDTO();
         orderRequestDTO.setId(Long.valueOf(number));
-        
-        // Criar uma entidade Order para usar nos items
+
         Order order = new Order();
         order.setId(Long.valueOf(number));
-        List<OrderItem> items = mockItem.mockItemsList(order);
+        List<OrderItemRequestDTO> items = mockItem.mockItemsDTOListRequest();
         orderRequestDTO.setItems(items);
 
+        List<OrderItemResponseDTO> itemsResponse = mockItem.mockItemsDTOListResponse();
         double total = 0.0;
-        for (OrderItem item : items) {
+        for (OrderItemResponseDTO item : itemsResponse) {
             total += item.getProduct().getPrice() * item.getQuantity();
         }
         orderRequestDTO.setFullValue(total);
@@ -79,15 +81,15 @@ public class MockOrder {
         for (int i = 1; i <= 2; i++) {
             OrderRequestDTO order = new OrderRequestDTO();
             order.setId((long) i);
-            
-            // Criar uma entidade Order para usar nos items
+
             Order orderEntity = new Order();
             orderEntity.setId((long) i);
-            List<OrderItem> items = mockItem.mockItemsList(orderEntity);
+            List<OrderItemRequestDTO> items = mockItem.mockItemsDTOListRequest();
             order.setItems(items);
 
+            List<OrderItemResponseDTO> itemsResponse = mockItem.mockItemsDTOListResponse();
             double total = 0.0;
-            for (OrderItem item : items) {
+            for (OrderItemResponseDTO item : itemsResponse) {
                 total += item.getProduct().getPrice() * item.getQuantity();
             }
             order.setFullValue(total);

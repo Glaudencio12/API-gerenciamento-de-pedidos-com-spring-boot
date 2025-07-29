@@ -1,9 +1,8 @@
 package br.com.gerencimentodepedidos.service;
 
-import br.com.gerencimentodepedidos.data.dto.request.OrderRequestDTO;
 import br.com.gerencimentodepedidos.data.dto.request.OrderItemRequestDTO;
-import br.com.gerencimentodepedidos.data.dto.request.ProductRequestDTO;
 import br.com.gerencimentodepedidos.data.dto.response.OrderItemResponseDTO;
+import br.com.gerencimentodepedidos.data.dto.response.ProductResponseDTO;
 import br.com.gerencimentodepedidos.exception.ResourceNotFoundException;
 import br.com.gerencimentodepedidos.mapper.ObjectMapper;
 import br.com.gerencimentodepedidos.model.Order;
@@ -39,25 +38,38 @@ public class OrderItemService {
         this.hateoas = hateoas;
     }
 
-    public OrderItemResponseDTO createOrderItem(Long orderId, OrderItemRequestDTO item) {
-        logger.info("Creating a order Item!");
-        Product product = productRepository.findById(item.getProduct().getId()).orElseThrow(() -> new ResourceNotFoundException("Product not found for this id"));
-        Order order = orderRepository.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Order not found for this id"));
-        item.setOrder(order);
+    public OrderItemResponseDTO createOrderItem(OrderItemRequestDTO itemDTO) {
+        logger.info("Creating an order item!");
+        Product product = productRepository.findById(itemDTO.getProductId()).orElseThrow(() -> new ResourceNotFoundException("Product not found for this id"));
+        Order order = orderRepository.findById(itemDTO.getOrderId()).orElseThrow(() -> new ResourceNotFoundException("Order not found for this id"));
+
+        OrderItem item = new OrderItem();
         item.setProduct(product);
-        item.setQuantity(item.getQuantity());
-        var entity = ObjectMapper.parseObject(item, OrderItem.class);
-        var dto = ObjectMapper.parseObject(repository.save(entity), OrderItemResponseDTO.class);
-        hateoas.links(dto);
-        hateoas.links(dto.getProduct());
-        return dto;
+        item.setOrder(order);
+        item.setQuantity(itemDTO.getQuantity());
+        item = repository.save(item);
+
+        ProductResponseDTO productDTO = new ProductResponseDTO();
+        productDTO.setId(product.getId());
+        productDTO.setName(product.getName());
+        productDTO.setPrice(product.getPrice());
+        hateoas.links(productDTO);
+
+        OrderItemResponseDTO responseDTO = new OrderItemResponseDTO();
+        responseDTO.setId(item.getId());
+        responseDTO.setProduct(productDTO);
+        responseDTO.setQuantity(item.getQuantity());
+
+        hateoas.links(responseDTO);
+        return responseDTO;
     }
+
 
     public OrderItemResponseDTO findOrderItemById(Long id) {
         logger.info("Find a order item!");
         var entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Item not found for this id"));
         var dto = ObjectMapper.parseObject(entity, OrderItemResponseDTO.class);
-        hateoas.links(dto.getProduct()); // Corrigir aqui os links hateoas
+        hateoas.links(dto.getProduct());
         hateoas.links(dto);
         return dto;
     }
@@ -75,10 +87,10 @@ public class OrderItemService {
     public OrderItemResponseDTO updateOrderItemById(Long id, OrderItemRequestDTO item) {
         logger.info("Updating the order item");
         OrderItem itemEntity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Item not found for this id"));
-        itemEntity.setProduct(ObjectMapper.parseObject(item.getProduct(), Product.class));
+        Product productEntity = productRepository.findById(item.getProductId()).orElseThrow(() -> new ResourceNotFoundException("Product not found for this id"));
+        itemEntity.setProduct(productEntity);
         itemEntity.setQuantity(item.getQuantity());
-        var entity = ObjectMapper.parseObject(itemEntity, OrderItem.class);
-        var dto = ObjectMapper.parseObject(repository.save(entity), OrderItemResponseDTO.class);
+        var dto = ObjectMapper.parseObject(repository.save(itemEntity), OrderItemResponseDTO.class);
         hateoas.links(dto.getProduct());
         hateoas.links(dto);
         return dto;

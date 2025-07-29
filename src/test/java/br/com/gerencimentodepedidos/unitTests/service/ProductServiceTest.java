@@ -45,7 +45,7 @@ class ProductServiceTest {
         mock = new MockProduct();
 
         product = mock.mockProductEntity(1);
-        productRequestDTO = mock.mockProductDTO(1);
+        productRequestDTO = mock.mockProductDTORequest(1);
         products = mock.mockListProducts();
         productRequestDTOS = mock.mockListProductsDTO();
     }

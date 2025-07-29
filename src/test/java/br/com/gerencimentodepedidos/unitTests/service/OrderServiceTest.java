@@ -1,7 +1,10 @@
 package br.com.gerencimentodepedidos.unitTests.service;
 
+import br.com.gerencimentodepedidos.data.dto.request.OrderItemRequestDTO;
 import br.com.gerencimentodepedidos.data.dto.request.OrderRequestDTO;
+import br.com.gerencimentodepedidos.data.dto.response.OrderItemResponseDTO;
 import br.com.gerencimentodepedidos.data.dto.response.OrderResponseDTO;
+import br.com.gerencimentodepedidos.data.dto.response.ProductResponseDTO;
 import br.com.gerencimentodepedidos.exception.ResourceNotFoundException;
 import br.com.gerencimentodepedidos.model.OrderItem;
 import br.com.gerencimentodepedidos.model.Product;
@@ -91,8 +94,8 @@ class OrderServiceTest {
     @DisplayName("Should retrieve an order by ID with HATEOAS links and verify item/product links")
     void findOrderById() {
         when(repository.findById(order.getId())).thenReturn(Optional.of(order));
-        doCallRealMethod().when(hateoasLinks).links(any(Product.class));
-        doCallRealMethod().when(hateoasLinks).links(any(OrderItem.class));
+        doCallRealMethod().when(hateoasLinks).links(any(ProductResponseDTO.class));
+        doCallRealMethod().when(hateoasLinks).links(any(OrderItemResponseDTO.class));
         doCallRealMethod().when(hateoasLinks).links(any(OrderResponseDTO.class));
 
         var result = service.findOrderById(1L);
@@ -106,16 +109,16 @@ class OrderServiceTest {
         assertLinks(result, "createOrder", "/api/v1/orders", "POST");
         assertLinks(result, "deleteOrderById", "/api/v1/orders/1", "DELETE");
 
-        verify(hateoasLinks, times(4)).links(any(OrderItem.class));
-        verify(hateoasLinks, times(4)).links(any(Product.class));
+        verify(hateoasLinks, times(4)).links(any(OrderItemResponseDTO.class));
+        verify(hateoasLinks, times(4)).links(any(ProductResponseDTO.class));
     }
 
     @Test
     @DisplayName("Should retrieve all orders with proper HATEOAS links and verify item/product links")
     void findAllOrders() {
         when(repository.findAll()).thenReturn(orders);
-        doCallRealMethod().when(hateoasLinks).links(any(OrderItem.class));
-        doCallRealMethod().when(hateoasLinks).links(any(Product.class));
+        doCallRealMethod().when(hateoasLinks).links(any(ProductResponseDTO.class));
+        doCallRealMethod().when(hateoasLinks).links(any(OrderItemResponseDTO.class));
         doCallRealMethod().when(hateoasLinks).links(any(OrderResponseDTO.class));
 
 
@@ -136,8 +139,8 @@ class OrderServiceTest {
         assertLinks(orderItemTwo, "createOrder", "/api/v1/orders", "POST");
         assertLinks(orderItemTwo, "deleteOrderById", "/api/v1/orders/2", "DELETE");
 
-        verify(hateoasLinks, times(8)).links(any(OrderItem.class));
-        verify(hateoasLinks, times(8)).links(any(Product.class));
+        verify(hateoasLinks, times(8)).links(any(OrderItemResponseDTO.class));
+        verify(hateoasLinks, times(8)).links(any(ProductResponseDTO.class));
     }
 
     @Test

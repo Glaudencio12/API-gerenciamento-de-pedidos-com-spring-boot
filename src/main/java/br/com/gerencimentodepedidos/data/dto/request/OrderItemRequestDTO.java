@@ -1,7 +1,5 @@
 package br.com.gerencimentodepedidos.data.dto.request;
 
-import br.com.gerencimentodepedidos.model.Order;
-import br.com.gerencimentodepedidos.model.Product;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -11,13 +9,14 @@ import lombok.*;
 @Setter
 public class OrderItemRequestDTO {
     private Long id;
+
     @NotNull(message = "The product is mandatory")
-    private Product product;
+    private Long productId;
 
     @NotNull(message = "The quantity is mandatory")
     @Min(value = 1, message = "The minimum quantity is 1")
     private int quantity;
 
-    @NotNull(message = "The order is mandatory")
-    private Order order;
+    @NotNull(message = "The id of the order is mandatory")
+    private Long orderId;
 }

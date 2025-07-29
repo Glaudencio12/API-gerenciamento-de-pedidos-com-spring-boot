@@ -1,6 +1,5 @@
 package br.com.gerencimentodepedidos.data.dto.response;
 
-import br.com.gerencimentodepedidos.model.OrderItem;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +14,7 @@ import java.util.List;
 @Setter
 public class OrderResponseDTO extends RepresentationModel<OrderResponseDTO> {
     private Long id;
-    private List<OrderItem> items = new ArrayList<>();
+    private List<OrderItemResponseDTO> items = new ArrayList<>();
     @JsonProperty("full_value")
     private double fullValue;
 }

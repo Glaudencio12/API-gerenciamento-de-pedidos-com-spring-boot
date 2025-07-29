@@ -70,10 +70,10 @@ class OrderItemServiceTest {
         order = mockOrder.mockOrder(1);
         orderRequestDTO = mockOrder.mockOrderDTO(1);
         product = mockProduct.mockProductEntity(1);
-        productRequestDTO = mockProduct.mockProductDTO(1);
+        productRequestDTO = mockProduct.mockProductDTORequest(1);
         orderItem = mockItem.mockItemEntity(1, order, product, 2);
         orderItems = mockItem.mockItemsList(order);
-        orderItemRequestDTO = mockItem.mockItemDTO(1, order, product, 2);
+        orderItemRequestDTO = mockItem.mockItemDTORequest(1, order.getId(), product.getId(), 2);
     }
 
     public static void assertLinks(OrderItemResponseDTO dto, String rel, String href, String type) {
@@ -91,22 +91,22 @@ class OrderItemServiceTest {
         when(productRepository.findById(product.getId())).thenReturn(Optional.of(product));
         when(repository.save(any(OrderItem.class))).thenReturn(orderItem);
 
-        lenient().doCallRealMethod().when(hateoasLinks).links(any(OrderItemResponseDTO.class));
-        lenient().doCallRealMethod().when(hateoasLinks).links(any(ProductResponseDTO.class));
+        doCallRealMethod().when(hateoasLinks).links(any(OrderItemResponseDTO.class));
+        doCallRealMethod().when(hateoasLinks).links(any(ProductResponseDTO.class));
 
-        var result = service.createOrderItem(orderItemRequestDTO.getId(), orderItemRequestDTO);
+        var result = service.createOrderItem(orderItemRequestDTO);
 
         assertNotNull(result);
         assertNotNull(result.getId());
         assertNotNull(result.getLinks());
 
-        assertLinks(result, "createOrderItem","api/v1/items/order/1", "POST");
+        assertLinks(result, "createOrderItem","api/v1/items", "POST");
         assertLinks(result, "findOrderItemById","api/v1/items/1", "GET");
         assertLinks(result, "findAllOrderItems", "api/v1/items", "GET");
         assertLinks(result, "updateOrderItemById", "api/v1/items/1", "PUT");
         assertLinks(result, "deleteOrderItemById", "api/v1/items/1", "DELETE");
 
-        verify(hateoasLinks, times(1)).links(any(Product.class));
+        verify(hateoasLinks, times(1)).links(any(ProductResponseDTO.class));
     }
 
     @Test
@@ -122,21 +122,21 @@ class OrderItemServiceTest {
         assertNotNull(result.getId());
         assertNotNull(result.getLinks());
 
-        assertLinks(result, "createOrderItem","api/v1/items/order/1", "POST");
+        assertLinks(result, "createOrderItem","api/v1/items", "POST");
         assertLinks(result, "findOrderItemById","api/v1/items/1", "GET");
         assertLinks(result, "findAllOrderItems", "api/v1/items", "GET");
         assertLinks(result, "updateOrderItemById", "api/v1/items/1", "PUT");
         assertLinks(result, "deleteOrderItemById", "api/v1/items/1", "DELETE");
 
-        verify(hateoasLinks, times(1)).links(any(Product.class));
+        verify(hateoasLinks, times(1)).links(any(ProductResponseDTO.class));
     }
 
     @Test
     @DisplayName("Should retrieve all order items with correct HATEOAS links for each item")
     void findAllOrderItems() {
         when(repository.findAll()).thenReturn(orderItems);
-        lenient().doCallRealMethod().when(hateoasLinks).links(any(OrderItemResponseDTO.class));
-        lenient().doCallRealMethod().when(hateoasLinks).links(any(ProductResponseDTO.class));
+        doCallRealMethod().when(hateoasLinks).links(any(OrderItemResponseDTO.class));
+        doCallRealMethod().when(hateoasLinks).links(any(ProductResponseDTO.class));
 
         List<OrderItemResponseDTO> result = service.findAllOrderItems();
 
@@ -144,43 +144,45 @@ class OrderItemServiceTest {
         assertEquals(4, result.size());
 
         var orderItemOne = result.get(1);
-        assertLinks(orderItemOne, "createOrderItem","api/v1/items/order/1", "POST");
+        assertLinks(orderItemOne, "createOrderItem","api/v1/items", "POST");
         assertLinks(orderItemOne, "findOrderItemById","api/v1/items/2", "GET");
         assertLinks(orderItemOne, "findAllOrderItems", "api/v1/items", "GET");
         assertLinks(orderItemOne, "updateOrderItemById", "api/v1/items/2", "PUT");
         assertLinks(orderItemOne, "deleteOrderItemById", "api/v1/items/2", "DELETE");
 
         var orderItemTwo = result.get(3);
-        assertLinks(orderItemTwo, "createOrderItem","api/v1/items/order/1", "POST");
+        assertLinks(orderItemTwo, "createOrderItem","api/v1/items", "POST");
         assertLinks(orderItemTwo, "findOrderItemById","api/v1/items/4", "GET");
         assertLinks(orderItemTwo, "findAllOrderItems", "api/v1/items", "GET");
         assertLinks(orderItemTwo, "updateOrderItemById", "api/v1/items/4", "PUT");
         assertLinks(orderItemTwo, "deleteOrderItemById", "api/v1/items/4", "DELETE");
 
-        verify(hateoasLinks, times(4)).links(any(Product.class));
+        verify(hateoasLinks, times(4)).links(any(ProductResponseDTO.class));
     }
 
     @Test
     @DisplayName("Should update an order item by ID and return updated HATEOAS links")
     void updateOrderItemById() {
         when(repository.findById(orderItem.getId())).thenReturn(Optional.of(orderItem));
+        when(productRepository.findById(orderItemRequestDTO.getProductId())).thenReturn(Optional.of(product));
         when(repository.save(orderItem)).thenReturn(orderItem);
-        lenient().doCallRealMethod().when(hateoasLinks).links(any(OrderItemResponseDTO.class));
-        lenient().doCallRealMethod().when(hateoasLinks).links(any(ProductResponseDTO.class));
 
-        var result = service.updateOrderItemById(orderItem.getId(), orderItemRequestDTO);
+        doCallRealMethod().when(hateoasLinks).links(any(ProductResponseDTO.class));
+        doCallRealMethod().when(hateoasLinks).links(any(OrderItemResponseDTO.class));
+
+        var result = service.updateOrderItemById(orderItemRequestDTO.getId(), orderItemRequestDTO);
 
         assertNotNull(result);
         assertNotNull(result.getId());
         assertNotNull(result.getLinks());
 
-        assertLinks(result, "createOrderItem","api/v1/items/order/1", "POST");
+        assertLinks(result, "createOrderItem","api/v1/items", "POST");
         assertLinks(result, "findOrderItemById","api/v1/items/1", "GET");
         assertLinks(result, "findAllOrderItems", "api/v1/items", "GET");
         assertLinks(result, "updateOrderItemById", "api/v1/items/1", "PUT");
         assertLinks(result, "deleteOrderItemById", "api/v1/items/1", "DELETE");
 
-        verify(hateoasLinks, times(1)).links(any(Product.class));
+        verify(hateoasLinks, times(1)).links(any(ProductResponseDTO.class));
     }
 
     @Test
@@ -217,7 +219,7 @@ class OrderItemServiceTest {
             when(productRepository.findById(1L)).thenReturn(Optional.empty());
 
             ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
-                service.createOrderItem(1L, orderItemRequestDTO);
+                service.createOrderItem(orderItemRequestDTO);
             });
 
             assertEquals("Product not found for this id", exception.getMessage());
@@ -230,7 +232,7 @@ class OrderItemServiceTest {
             when(orderRepository.findById(1L)).thenReturn(Optional.empty());
 
             ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
-                service.createOrderItem(1L, orderItemRequestDTO);
+                service.createOrderItem(orderItemRequestDTO);
             });
 
             assertEquals("Order not found for this id", exception.getMessage());

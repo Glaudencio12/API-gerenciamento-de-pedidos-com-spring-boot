@@ -23,14 +23,14 @@ public class OrderItemController implements OrderItemControllerDocs {
     @Autowired
     OrderService serviceOrder;
 
-    @PostMapping(value = "/order/{orderId}",
+    @PostMapping(
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE}
     )
     @Override
-    public OrderItemResponseDTO create(@PathVariable("orderId") Long orderId, @RequestBody @Valid OrderItemRequestDTO item){
-        OrderItemResponseDTO itemCreated = services.createOrderItem(orderId, item);
-        serviceOrder.fullValue(orderId);
+    public OrderItemResponseDTO create(@RequestBody @Valid OrderItemRequestDTO item){
+        OrderItemResponseDTO itemCreated = services.createOrderItem(item);
+        serviceOrder.fullValue(item.getOrderId());
         return itemCreated;
     }
 

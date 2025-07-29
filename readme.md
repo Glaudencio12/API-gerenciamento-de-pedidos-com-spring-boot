@@ -88,7 +88,7 @@ Gerenciamento-de-pedidos
 
 * `GET /api/v1/items` — Listar todos os itens de pedidos
 * `GET /api/v1/items/{itemId}` — Obter item de pedido por ID
-* `POST /api/v1/items/order/{orderId}` — Adicionar um produto via body ao item e adicioná-lo a um pedido existente
+* `POST /api/v1/items` — Adicionar um produto via body ao item e o adiciona a um pedido existente
 * `PUT /api/v1/items/{id}` — Atualizar item do pedido via ID e body
 * `DELETE /api/v1/items/{id}` — Deletar item do pedido
 
@@ -106,7 +106,7 @@ Gerenciamento-de-pedidos
 {
   "name": "Refrigerante",
   "price": 7.50,
-  "category_product": "BEBIDA"
+  "category": "BEBIDA"
 }
 ```
 ### Buscar Produto por ID
@@ -142,10 +142,9 @@ Sem corpo (body). Retorna um JSON como:
 
 ```json
 {
-  "product" {
-      "id": 1
-   },
-  "quantity": 2
+  "productId": 1,
+  "quantity": 2,
+  "orderId": 1
 }
 ```
 
@@ -157,10 +156,9 @@ Sem corpo (body). Retorna um JSON como:
 
 ```json
 {
-  "product" {
-      "id": 2
-   },
-  "quantity": 6
+  "productId": 1,
+  "quantity": 3,
+  "orderId": 1
 }
 ```
 ### Excluir Pedido

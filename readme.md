@@ -210,38 +210,39 @@ Após inciar o projeto acesse via:
 
 * Exemplo de .env:
 ```env
-MYSQL_DB_URL=jdbc:mysql://localhost:3306/gerenciamento_pedidos?useTimezone=true&serverTimezone=UTC  # URL de conexão local do MySQL
-MYSQL_DB_USERNAME=root  # Usuário root do MySQL
-MYSQL_DB_PASSWORD=admin123  # Senha do usuário root
-
-MYSQL_USER=usuario  # Usuário criado no banco para a aplicação
-MYSQL_PASSWORD=senha123  # Senha do usuário criado para a aplicação
-
-SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/gerenciamento_pedidos?useTimezone=true&serverTimezone=UTC  # URL de conexão do banco dentro do container Docker
-SPRING_DATASOURCE_USERNAME=usuario  # Usuário usado pela aplicação para conectar ao banco
-SPRING_DATASOURCE_PASSWORD=senha123  # Senha usada pela aplicação para conectar ao banco
+    #Variáveis para o banco de dados local (localHost)
+    MYSQL_DB_URL=jdbc:mysql://localhost:3306/gerenciamento_pedidos?useTimezone=true&serverTimezone=UTC           # URL JDBC para conectar à base MySQL localmente
+    MYSQL_DB_USERNAME=usuario_exemplo          # Usuário que a aplicação usará para conectar no banco local
+    MYSQL_DB_PASSWORD=senha_forte      # Senha para o usuário acima
+    
+    # Variáveis para o container MySQL (imagem mysql:8.0)
+    MYSQL_USER=usuario_exemplo                 # Usuário criado automaticamente no MySQL
+    MYSQL_PASSWORD=senhaForte123                # Senha do usuário MYSQL_USER
+    MYSQL_ROOT_PASSWORD=adminRoot2025           # Senha do usuário root (administrador) do MySQL
+    
+    # Variáveis para a aplicação Spring Boot (imagem da app)
+    SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/sistema_escolar?useTimezone=true&serverTimezone=UTC         # URL JDBC para conectar à base MySQL no container 'db'
+    SPRING_DATASOURCE_USERNAME=usuario_exemplo        # Usuário que a aplicação usará para conectar no banco (deve ser igual a MYSQL_USER)
+    SPRING_DATASOURCE_PASSWORD=senhaForte123          # Senha para o usuário acima (deve ser igual a MYSQL_PASSWORD)
 ```
+
+> Observações:
+> Caso queira conectar a aplicação a um banco local, você deve criar um banco com o mesmo nome da url de conexão: `gerenciamento_pedidos`
+
 3. **Inicie os Serviços com Docker Compose**
 * Navegue até a pasta raiz do projeto no seu terminal e execute os comandos abaixo.
     * **Importante:** Certifique-se de que os arquivos `docker-compose.yml` e o `Dockerfile` da aplicação estejam no diretório atual quando você abrir o terminal
-   ```bash
-   docker compose pull glaudencio123/gerenciamento-de-pedidos:v4
-   ```
-  Esse comando irá:
-    * Baixar a imagem da aplicação do Docker Hub
-   
-* Apoós executar o comando acima, execute:
     ```bash
-   docker compose up -d
+   docker-compose up -d
    ```
-    Esse comando irá:
-     * Subir o banco MySQL e a aplicação conectados em rede
-
+    Esse comando irá fazer:
+    Pull da imagem Docker da própria aplicação e do MySQL a partir do Docker Hub. Em seguida, ambos os containers serão inicializados e a aplicação será carregada.
 
 4.  **Verifique a Execução dos Contêineres:**
 * Você pode confirmar que os contêineres estão rodando de duas maneiras:
     * **Via Terminal:** Execute `docker ps` para ver uma lista dos contêineres ativos ou execute`docker container ls`, que terá o mesmo resultado 
-5.  **Acesse a Aplicação:**
+
+5.**Acesse a Aplicação:**
 * Com os serviços em funcionamento, você pode testar a aplicação usando o Postaman ou o Swagger via: 
 ```bash
   http://localhost:8080/swagger-ui/index.html

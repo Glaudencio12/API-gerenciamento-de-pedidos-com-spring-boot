@@ -22,7 +22,7 @@ services:
       - network_gerenciamento_pedidos
 
   app:
-    image: glaudencio123/gerenciamento-de-pedidos:v6
+    image: glaudencio123/gerenciamento-de-pedidos:v7
     container_name: app_gerenciamento_de_pedidos
     depends_on:
       db:

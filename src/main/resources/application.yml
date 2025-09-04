@@ -14,7 +14,11 @@ spring:
 logging:
   level:
     root: INFO
-spring-doc:
-  paths-to-match: /api/**/v1/**
-  swagger-ui:
-    use-root-path: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, prometheus, metrics
+  endpoint:
+    health:
+      show-details: always

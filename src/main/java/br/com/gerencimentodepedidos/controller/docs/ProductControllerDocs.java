@@ -6,11 +6,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 import java.util.List;
 import java.util.Map;
@@ -84,7 +86,16 @@ public interface ProductControllerDocs {
             @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
         }
     )
-    ProductResponseDTO updatePatch(@Parameter(description = "Id of the product", example = "1") @PathVariable("id") Long id, @RequestBody Map<String, Object> fields);
+    ProductResponseDTO updatePatch(@Parameter(description = "Id of the product", example = "1") @PathVariable("id") Long id,
+                                   @RequestBody(
+                                           content = @Content(
+                                                   examples = {
+                                                           @ExampleObject(
+                                                                   value = "{ \"price\": 99.90 }"
+                                                           )
+                                                   }
+                                           )
+                                   ) @org.springframework.web.bind.annotation.RequestBody Map<String, Object> fields);
 
     @Operation(summary = "Delete a product", description = "Delete a product by its respective ID", tags = "Product",
         responses = {

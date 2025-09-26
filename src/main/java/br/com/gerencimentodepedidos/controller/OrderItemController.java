@@ -28,7 +28,7 @@ public class OrderItemController implements OrderItemControllerDocs {
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE}
     )
     @Override
-    public OrderItemResponseDTO create(@RequestBody @Valid OrderItemRequestDTO item){
+    public OrderItemResponseDTO create(@Valid OrderItemRequestDTO item){
         OrderItemResponseDTO itemCreated = services.createOrderItem(item);
         serviceOrder.fullValue(item.getOrderId());
         return itemCreated;
@@ -36,7 +36,7 @@ public class OrderItemController implements OrderItemControllerDocs {
 
     @GetMapping(value = "/{itemId}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE})
     @Override
-    public OrderItemResponseDTO findById(@PathVariable("itemId") Long id){
+    public OrderItemResponseDTO findById(Long id){
         return services.findOrderItemById(id);
     }
 
@@ -51,13 +51,13 @@ public class OrderItemController implements OrderItemControllerDocs {
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE}
     )
     @Override
-    public OrderItemResponseDTO update(@PathVariable("id") Long id, @RequestBody @Valid OrderItemRequestDTO item){
+    public OrderItemResponseDTO update(Long id, @Valid OrderItemRequestDTO item){
         return services.updateOrderItemById(id, item);
     }
 
     @DeleteMapping("/{id}")
     @Override
-    public ResponseEntity<?> delete(@PathVariable("id") Long id){
+    public ResponseEntity<?> delete(Long id){
         services.deleteOrderItemById(id);
         return ResponseEntity.noContent().build();
     }

@@ -82,6 +82,7 @@ Gerenciamento-de-pedidos
 * `GET /api/v1/products/{id}` — Obter produto por ID
 * `POST /api/v1/products` — Criar novo produto via body
 * `PUT /api/v1/products/{id}` — Atualizar produto via ID e body
+* `PATCH /api/v1/products/fields/{id}` — Atualizar um campo específico do produto via ID e body
 * `DELETE /api/v1/products/{id}` — Deletar produto
 
 ### Itens do Pedido (`/api/v1/items`)
@@ -176,6 +177,17 @@ Sem corpo (body). Basta informar o `id` na URL.
   "name": "Suco Natural",
   "price": 8.00,
   "category": "BEBIDA"
+}
+```
+
+### Atualizar um campo de Produto
+
+**Endpoint:** `PATCH /api/v1/products/fields/{id}`
+**Exemplo para id = 3:**
+
+```json
+{
+  "price": 8.00,
 }
 ```
 

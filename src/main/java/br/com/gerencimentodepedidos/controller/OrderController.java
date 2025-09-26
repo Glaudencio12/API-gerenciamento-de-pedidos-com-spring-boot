@@ -25,13 +25,13 @@ public class OrderController implements OrderControllerDocs {
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE}
     )
     @Override
-    public OrderResponseDTO create(@RequestBody @Valid OrderRequestDTO order){
+    public OrderResponseDTO create(@Valid OrderRequestDTO order){
         return services.createOrder(order);
     }
 
     @GetMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE})
     @Override
-    public OrderResponseDTO findById(@PathVariable("id") Long id){
+    public OrderResponseDTO findById(Long id){
         return services.findOrderById(id);
     }
 
@@ -43,7 +43,7 @@ public class OrderController implements OrderControllerDocs {
 
     @DeleteMapping(value = "/{id}")
     @Override
-    public ResponseEntity<?> delete(@PathVariable("id") Long id){
+    public ResponseEntity<?> delete(Long id){
         services.deleteOrderById(id);
         return ResponseEntity.noContent().build();
     }

@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+
 public interface ProductControllerDocs {
     @Operation(summary = "Find a product", description = "Seeks a product for its respective ID", tags = "Product",
         responses = {
@@ -68,7 +70,21 @@ public interface ProductControllerDocs {
             @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
         }
     )
-    ProductResponseDTO update(@Parameter(description = "Id of the product", example = "1") @PathVariable("id") Long id, @RequestBody @Valid ProductRequestDTO product);
+    ProductResponseDTO update(@Parameter(description = "Id of the product", example = "1") @PathVariable("id") Long id, @RequestBody ProductRequestDTO product);
+
+    @Operation(summary = "Updates a product field (name, price and category)", description = "Capture only one product field passed via Body and updates it in isolation.", tags = "Product",
+        responses = {
+            @ApiResponse(description = "Success", responseCode = "200",
+                content = @Content(schema = @Schema(implementation = ProductResponseDTO.class))
+            ),
+            @ApiResponse(description = "BadRequest", responseCode = "400", content = @Content),
+            @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
+            @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
+            @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
+            @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
+        }
+    )
+    ProductResponseDTO updatePatch(@Parameter(description = "Id of the product", example = "1") @PathVariable("id") Long id, @RequestBody Map<String, Object> fields);
 
     @Operation(summary = "Delete a product", description = "Delete a product by its respective ID", tags = "Product",
         responses = {

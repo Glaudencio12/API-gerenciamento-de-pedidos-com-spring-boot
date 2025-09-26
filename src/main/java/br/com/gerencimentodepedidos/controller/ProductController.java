@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/products")
@@ -22,7 +23,7 @@ public class ProductController implements ProductControllerDocs {
 
     @GetMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE})
     @Override
-    public ProductResponseDTO findById(@PathVariable("id") Long id) {
+    public ProductResponseDTO findById(Long id) {
         return services.findProductById(id);
     }
 
@@ -37,7 +38,7 @@ public class ProductController implements ProductControllerDocs {
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE}
     )
     @Override
-    public ProductResponseDTO create(@RequestBody @Valid ProductRequestDTO product) {
+    public ProductResponseDTO create(@Valid ProductRequestDTO product) {
         return services.createProduct(product);
     }
 
@@ -46,13 +47,22 @@ public class ProductController implements ProductControllerDocs {
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE}
     )
     @Override
-    public ProductResponseDTO update(@PathVariable("id") Long id, @Valid @RequestBody ProductRequestDTO product) {
+    public ProductResponseDTO update(Long id, @Valid ProductRequestDTO product) {
         return services.updateProductById(id, product);
+    }
+
+    @PatchMapping(value = "/fields/{id}",
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE}
+    )
+    @Override
+    public ProductResponseDTO updatePatch(Long id, Map<String, Object> fields) {
+        return services.updateProductField(fields, id);
     }
 
     @DeleteMapping(value = "/{id}")
     @Override
-    public ResponseEntity<?> delete(@PathVariable("id") Long id) {
+    public ResponseEntity<?> delete(Long id) {
         services.deleteProductById(id);
         return ResponseEntity.noContent().build();
     }

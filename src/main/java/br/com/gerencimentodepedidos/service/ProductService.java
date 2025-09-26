@@ -10,8 +10,12 @@ import br.com.gerencimentodepedidos.utils.HateoasLinks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ReflectionUtils;
 
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Service
 public class ProductService {
@@ -65,9 +69,43 @@ public class ProductService {
         return dto;
     }
 
-public void deleteProductById(Long id) {
-    logger.info("Deleting a product!");
-    Product product = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found for this id"));
-    repository.delete(product);
-}
+    public ProductResponseDTO updateProductField(Map<String, Object> fields, Long id) {
+        Product registeredEntity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found for this id"));
+
+        Set<String> allowedFields = Set.of("name", "price", "category");
+
+        for (String key : fields.keySet()) {
+            if (!allowedFields.contains(key)) {
+                throw new IllegalArgumentException("The field provided is not allowed for changes");
+            }
+        }
+
+        fields.forEach((campo, valor) -> {
+            Field field = ReflectionUtils.findField(Product.class, campo);
+
+            if (campo.equals("name") || campo.equals("category")) {
+                if (!(valor instanceof String) || ((String) valor).isBlank()) {
+                    throw new IllegalArgumentException(field.getName() + " must be a non-empty string");
+                }
+            } else if (campo.equals("price")) {
+                if (!(valor instanceof Number) || ((Number) valor).doubleValue() < 0) {
+                    throw new IllegalArgumentException(field.getName() + " must be a non-negative number");
+                }
+            }
+
+            field.setAccessible(true);
+            ReflectionUtils.setField(field, registeredEntity, valor);
+        });
+
+        ProductResponseDTO dto = ObjectMapper.parseObject(repository.save(registeredEntity), ProductResponseDTO.class);
+        hateoas.links(dto);
+        return dto;
+    }
+
+
+    public void deleteProductById(Long id) {
+        logger.info("Deleting a product!");
+        Product product = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found for this id"));
+        repository.delete(product);
+    }
 }

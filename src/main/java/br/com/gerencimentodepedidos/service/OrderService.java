@@ -3,15 +3,16 @@ package br.com.gerencimentodepedidos.service;
 import br.com.gerencimentodepedidos.data.dto.request.OrderRequestDTO;
 import br.com.gerencimentodepedidos.data.dto.response.OrderResponseDTO;
 import br.com.gerencimentodepedidos.exception.ResourceNotFoundException;
-import br.com.gerencimentodepedidos.mapper.ObjectMapper;
 import br.com.gerencimentodepedidos.model.Order;
 import br.com.gerencimentodepedidos.model.OrderItem;
 import br.com.gerencimentodepedidos.repository.OrderRepository;
 import br.com.gerencimentodepedidos.utils.HateoasLinks;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -19,18 +20,20 @@ public class OrderService {
 
     private final OrderRepository repository;
     private final HateoasLinks hateoas;
+    private final ModelMapper modelMapper;
 
-    public OrderService(OrderRepository repositoryOrder, HateoasLinks hateoas) {
+    public OrderService(OrderRepository repositoryOrder, HateoasLinks hateoas, ModelMapper mapper) {
         this.repository = repositoryOrder;
         this.hateoas = hateoas;
+        this.modelMapper = mapper;
     }
 
     private final Logger logger = LoggerFactory.getLogger(OrderService.class.getName());
 
     public OrderResponseDTO createOrder(OrderRequestDTO order) {
         logger.info("Creating a order!");
-        var entity = ObjectMapper.parseObject(order, Order.class);
-        var dto = ObjectMapper.parseObject(repository.save(entity), OrderResponseDTO.class);
+        var entity = modelMapper.map(order, Order.class);
+        var dto = modelMapper.map(repository.save(entity), OrderResponseDTO.class);
         hateoas.links(dto);
         return dto;
     }
@@ -38,7 +41,7 @@ public class OrderService {
     public OrderResponseDTO findOrderById(Long id) {
         logger.info("Find a order!");
         var entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order not found for this id"));
-        var dto = ObjectMapper.parseObject(entity, OrderResponseDTO.class);
+        var dto = modelMapper.map(entity, OrderResponseDTO.class);
         dto.getItems().forEach(orderItemDTO -> {
             hateoas.links(orderItemDTO);
             hateoas.links(orderItemDTO.getProduct());
@@ -49,13 +52,16 @@ public class OrderService {
 
     public List<OrderResponseDTO> findAllOrders() {
         logger.info("Finding all orders!");
-        var dtos = ObjectMapper.parseListObjects(repository.findAll(), OrderResponseDTO.class);
-        dtos.forEach(orderDTO -> {
-            orderDTO.getItems().forEach(orderItemDTO -> {
-                hateoas.links(orderItemDTO);
-                hateoas.links(orderItemDTO.getProduct());
+        var orders = repository.findAll();
+        List<OrderResponseDTO> dtos = new ArrayList<>();
+        orders.forEach(order -> {
+            OrderResponseDTO orderResponse = modelMapper.map(order, OrderResponseDTO.class);
+            orderResponse.getItems().forEach(orderItem -> {
+                hateoas.links(orderItem);
+                hateoas.links(orderItem.getProduct());
             });
-            hateoas.links(orderDTO);
+            hateoas.links(orderResponse);
+            dtos.add(orderResponse);
         });
         return dtos;
     }

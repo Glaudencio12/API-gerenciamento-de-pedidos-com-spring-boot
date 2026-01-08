@@ -3,16 +3,17 @@ package br.com.gerencimentodepedidos.service;
 import br.com.gerencimentodepedidos.data.dto.request.ProductRequestDTO;
 import br.com.gerencimentodepedidos.data.dto.response.ProductResponseDTO;
 import br.com.gerencimentodepedidos.exception.ResourceNotFoundException;
-import br.com.gerencimentodepedidos.mapper.ObjectMapper;
 import br.com.gerencimentodepedidos.model.Product;
 import br.com.gerencimentodepedidos.repository.ProductRepository;
 import br.com.gerencimentodepedidos.utils.HateoasLinks;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,11 +24,13 @@ public class ProductService {
     private final ProductRepository repository;
     private final OrderService OrderService;
     private final HateoasLinks hateoas;
+    private final ModelMapper modelMapper;
 
-    public ProductService(ProductRepository repository, OrderService serviceOrder, HateoasLinks hateoas) {
+    public ProductService(ProductRepository repository, OrderService serviceOrder, HateoasLinks hateoas, ModelMapper modelMapper) {
         this.repository = repository;
         this.OrderService = serviceOrder;
         this.hateoas = hateoas;
+        this.modelMapper = modelMapper;
     }
 
     private final Logger logger = LoggerFactory.getLogger(ProductService.class.getName());
@@ -35,8 +38,8 @@ public class ProductService {
     public ProductResponseDTO createProduct(ProductRequestDTO product) {
         logger.info("Creating a Product!");
         product.setName(product.getName().trim());
-        var entity = ObjectMapper.parseObject(product, Product.class);
-        var dto = ObjectMapper.parseObject(repository.save(entity), ProductResponseDTO.class);
+        var entity = modelMapper.map(product, Product.class);
+        var dto = modelMapper.map(repository.save(entity), ProductResponseDTO.class);
         hateoas.links(dto);
         return dto;
 
@@ -45,17 +48,22 @@ public class ProductService {
     public ProductResponseDTO findProductById(Long id) {
         logger.info("Finding a product");
         var entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found for this id"));
-        var dto = ObjectMapper.parseObject(entity, ProductResponseDTO.class);
+        var dto = modelMapper.map(entity, ProductResponseDTO.class);
         hateoas.links(dto);
         return dto;
     }
-
     public List<ProductResponseDTO> findAllProducts() {
         logger.info("Finding all products");
-        var dto = ObjectMapper.parseListObjects(repository.findAll(), ProductResponseDTO.class);
-        dto.forEach(hateoas::links);
-        return dto;
+        var products = repository.findAll();
+        List<ProductResponseDTO> dtos = new ArrayList<>();
+        products.forEach(product -> {
+            ProductResponseDTO dto = modelMapper.map(product, ProductResponseDTO.class);
+            hateoas.links(dto);
+            dtos.add(dto);
+        });
+        return dtos;
     }
+
 
     public ProductResponseDTO updateProductById(Long id, ProductRequestDTO product) {
         logger.info("Updating a Product!");
@@ -63,7 +71,7 @@ public class ProductService {
         entity.setName(product.getName().trim());
         entity.setCategory(product.getCategory());
         entity.setPrice(product.getPrice());
-        var dto = ObjectMapper.parseObject(repository.save(entity), ProductResponseDTO.class);
+        var dto = modelMapper.map(repository.save(entity), ProductResponseDTO.class);
         OrderService.updateTotalOrderValue();
         hateoas.links(dto);
         return dto;
@@ -97,7 +105,7 @@ public class ProductService {
             ReflectionUtils.setField(field, registeredEntity, valor);
         });
 
-        ProductResponseDTO dto = ObjectMapper.parseObject(repository.save(registeredEntity), ProductResponseDTO.class);
+        ProductResponseDTO dto = modelMapper.map(repository.save(registeredEntity), ProductResponseDTO.class);
         hateoas.links(dto);
         return dto;
     }

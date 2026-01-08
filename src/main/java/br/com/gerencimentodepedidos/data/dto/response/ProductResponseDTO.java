@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.hateoas.Links;
 import org.springframework.hateoas.RepresentationModel;
 
 @NoArgsConstructor
@@ -15,4 +16,10 @@ public class ProductResponseDTO extends RepresentationModel<ProductResponseDTO> 
     private String name;
     private double price;
     private ProductCategory category;
+
+    @Override
+    @Schema(hidden = true)
+    public Links getLinks() {
+        return super.getLinks();
+    }
 }

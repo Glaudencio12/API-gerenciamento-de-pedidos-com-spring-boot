@@ -30,7 +30,7 @@ public interface OrderItemControllerDocs {
             @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
         }
     )
-    OrderItemResponseDTO create(@RequestBody @Valid OrderItemRequestDTO item);
+    ResponseEntity<OrderItemResponseDTO> create(@RequestBody @Valid OrderItemRequestDTO item);
 
     @Operation(summary = "Search an item", description = "Seek an item by your respective ID", tags = "Order Item",
         responses = {
@@ -44,7 +44,7 @@ public interface OrderItemControllerDocs {
             @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
         }
     )
-    OrderItemResponseDTO findById(@Parameter(description = "Id of the orderItem", example = "1") @PathVariable("itemId") Long id);
+    ResponseEntity<OrderItemResponseDTO> findById(@Parameter(description = "Id of the orderItem", example = "1") @PathVariable("itemId") Long id);
 
     @Operation(summary = "Search all item", description = "Search all items added to orders", tags = "Order Item",
         responses = {
@@ -58,7 +58,7 @@ public interface OrderItemControllerDocs {
             @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
         }
     )
-    PagedModel<EntityModel<OrderItemResponseDTO>> findAll(
+    ResponseEntity<PagedModel<EntityModel<OrderItemResponseDTO>>> findAll(
             @PageableDefault(
                     page = 0,
                     size = 10,
@@ -79,7 +79,7 @@ public interface OrderItemControllerDocs {
             @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
         }
     )
-    OrderItemResponseDTO update(@Parameter(description = "Id of the orderItem", example = "1") @PathVariable("id") Long id, @RequestBody @Valid OrderItemRequestDTO item);
+    ResponseEntity<OrderItemResponseDTO> update(@Parameter(description = "Id of the orderItem", example = "1") @PathVariable("id") Long id, @RequestBody @Valid OrderItemRequestDTO item);
 
     @Operation(summary = "Delete an item", description = "Delete an item from an order", tags = "Order Item",
             responses = {

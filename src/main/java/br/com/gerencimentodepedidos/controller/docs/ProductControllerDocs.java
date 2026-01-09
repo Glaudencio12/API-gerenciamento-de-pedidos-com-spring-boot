@@ -34,7 +34,7 @@ public interface ProductControllerDocs {
             @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
         }
     )
-    ProductResponseDTO findById(@Parameter(description = "Id of the product", example = "1") @PathVariable("id") Long id);
+    ResponseEntity<ProductResponseDTO> findById(@Parameter(description = "Id of the product", example = "1") @PathVariable("id") Long id);
 
     @Operation(summary = "Find all products", description = "Search all registered products", tags = "Product",
         responses = {
@@ -48,7 +48,7 @@ public interface ProductControllerDocs {
             @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
         }
     )
-    PagedModel<EntityModel<ProductResponseDTO>> findAll(
+    ResponseEntity<PagedModel<EntityModel<ProductResponseDTO>>> findAll(
             @PageableDefault(
                     page = 0,
                     size = 10,
@@ -69,7 +69,7 @@ public interface ProductControllerDocs {
             @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
         }
     )
-    ProductResponseDTO create(@RequestBody @Valid ProductRequestDTO product);
+    ResponseEntity<ProductResponseDTO> create(@RequestBody @Valid ProductRequestDTO product);
 
     @Operation(summary = "Updates a product", description = "Update an product by their respective ID passing the updateProductById via Body", tags = "Product",
         responses = {
@@ -83,7 +83,7 @@ public interface ProductControllerDocs {
             @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
         }
     )
-    ProductResponseDTO update(@Parameter(description = "Id of the product", example = "1") @PathVariable("id") Long id, @RequestBody ProductRequestDTO product);
+    ResponseEntity<ProductResponseDTO> update(@Parameter(description = "Id of the product", example = "1") @PathVariable("id") Long id, @RequestBody ProductRequestDTO product);
 
     @Operation(summary = "Updates a product field (name, price and category)", description = "Capture only one product field passed via Body and updates it in isolation.", tags = "Product",
         responses = {
@@ -97,7 +97,7 @@ public interface ProductControllerDocs {
             @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
         }
     )
-    ProductResponseDTO updatePatch(@Parameter(description = "Id of the product", example = "1") @PathVariable("id") Long id,
+    ResponseEntity<ProductResponseDTO> updatePatch(@Parameter(description = "Id of the product", example = "1") @PathVariable("id") Long id,
                                    @RequestBody(
                                            content = @Content(
                                                    examples = {

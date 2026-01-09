@@ -31,7 +31,7 @@ public interface OrderControllerDocs {
             @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
         }
     )
-    OrderResponseDTO create(@RequestBody @Valid OrderRequestDTO order);
+    ResponseEntity<OrderResponseDTO> create(@RequestBody @Valid OrderRequestDTO order);
 
     @Operation(summary = "Search an order", description = "Seek an order by your respective ID", tags = "Order",
         responses = {
@@ -45,7 +45,7 @@ public interface OrderControllerDocs {
             @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
         }
     )
-    OrderResponseDTO findById(@Parameter(description = "Id of the order", example = "1") @PathVariable("id") Long id);
+    ResponseEntity<OrderResponseDTO> findById(@Parameter(description = "Id of the order", example = "1") @PathVariable("id") Long id);
 
     @Operation(summary = "Search all orders", description = "Search all requests made", tags = "Order",
         responses = {
@@ -59,7 +59,7 @@ public interface OrderControllerDocs {
             @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
         }
     )
-    PagedModel<EntityModel<OrderResponseDTO>> findAll(
+    ResponseEntity<PagedModel<EntityModel<OrderResponseDTO>>> findAll(
             @PageableDefault(
                     page = 0,
                     size = 10,

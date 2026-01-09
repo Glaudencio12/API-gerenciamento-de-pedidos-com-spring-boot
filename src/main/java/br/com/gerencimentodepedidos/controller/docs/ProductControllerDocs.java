@@ -10,11 +10,15 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
-import java.util.List;
 import java.util.Map;
 
 public interface ProductControllerDocs {
@@ -44,7 +48,14 @@ public interface ProductControllerDocs {
             @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
         }
     )
-    List<ProductResponseDTO> findAll();
+    PagedModel<EntityModel<ProductResponseDTO>> findAll(
+            @PageableDefault(
+                    page = 0,
+                    size = 10,
+                    sort = "price",
+                    direction = Sort.Direction.ASC
+            )Pageable pageable
+    );
 
     @Operation(summary = "Create a product", description = "Create a product with the following data: name, price and category", tags = "Product",
         responses = {

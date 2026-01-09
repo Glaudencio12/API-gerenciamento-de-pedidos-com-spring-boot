@@ -7,11 +7,13 @@ import br.com.gerencimentodepedidos.service.ProductService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -21,6 +23,15 @@ public class ProductController implements ProductControllerDocs {
     @Autowired
     ProductService services;
 
+    @PostMapping(
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE},
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE}
+    )
+    @Override
+    public ProductResponseDTO create(@Valid ProductRequestDTO product) {
+        return services.createProduct(product);
+    }
+
     @GetMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE})
     @Override
     public ProductResponseDTO findById(Long id) {
@@ -29,17 +40,8 @@ public class ProductController implements ProductControllerDocs {
 
     @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE})
     @Override
-    public List<ProductResponseDTO> findAll() {
-        return services.findAllProducts();
-    }
-
-    @PostMapping(
-            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE},
-            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE}
-    )
-    @Override
-    public ProductResponseDTO create(@Valid ProductRequestDTO product) {
-        return services.createProduct(product);
+    public PagedModel<EntityModel<ProductResponseDTO>> findAll(Pageable pageable) {
+        return services.findAllProductsPage(pageable);
     }
 
     @PutMapping(value = "/{id}",

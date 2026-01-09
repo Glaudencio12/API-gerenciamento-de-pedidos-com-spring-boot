@@ -19,7 +19,8 @@ public class WebConfig implements WebMvcConfigurer {
          */
 
         // Content Negotiation via Header Params
-        configurer.favorParameter(false).useRegisteredExtensionsOnly(false)
+        configurer.favorParameter(false)
+                .useRegisteredExtensionsOnly(false)
                 .ignoreAcceptHeader(false)
                 .defaultContentType(MediaType.APPLICATION_JSON)
                 .mediaType("json", MediaType.APPLICATION_JSON)

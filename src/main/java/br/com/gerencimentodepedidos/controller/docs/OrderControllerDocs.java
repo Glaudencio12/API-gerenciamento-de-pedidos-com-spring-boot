@@ -1,8 +1,6 @@
 package br.com.gerencimentodepedidos.controller.docs;
 
-import br.com.gerencimentodepedidos.data.dto.request.OrderItemRequestDTO;
 import br.com.gerencimentodepedidos.data.dto.request.OrderRequestDTO;
-import br.com.gerencimentodepedidos.data.dto.response.OrderItemResponseDTO;
 import br.com.gerencimentodepedidos.data.dto.response.OrderResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -11,10 +9,13 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 public interface OrderControllerDocs {
     @Operation(summary = "Create a order", description = "Creates an order that will contain the requested items (products)", tags = "Order",
@@ -58,7 +59,13 @@ public interface OrderControllerDocs {
             @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
         }
     )
-    List<OrderResponseDTO> findAll();
+    PagedModel<EntityModel<OrderResponseDTO>> findAll(
+            @PageableDefault(
+                    page = 0,
+                    size = 10,
+                    direction = Sort.Direction.ASC
+            )Pageable pageable
+    );
 
     @Operation(summary = "Delete an order", description = "Delete an order", tags = "Order",
         responses = {

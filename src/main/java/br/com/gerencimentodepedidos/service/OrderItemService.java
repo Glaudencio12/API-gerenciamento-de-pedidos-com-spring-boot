@@ -14,6 +14,11 @@ import br.com.gerencimentodepedidos.utils.HateoasLinks;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,16 +32,18 @@ public class OrderItemService {
     private final OrderService serviceOrder;
     private final HateoasLinks hateoas;
     private final ModelMapper modelMapper;
+    private final PagedResourcesAssembler<OrderItemResponseDTO> assembler;
 
     Logger logger = LoggerFactory.getLogger(OrderItemService.class.getName());
 
     public OrderItemService(
-            OrderItemRepository repository, 
-            ProductRepository productRepository, 
-            OrderRepository orderRepository, 
-            OrderService serviceOrder, 
-            HateoasLinks hateoas, 
-            ModelMapper modelMapper
+            OrderItemRepository repository,
+            ProductRepository productRepository,
+            OrderRepository orderRepository,
+            OrderService serviceOrder,
+            HateoasLinks hateoas,
+            ModelMapper modelMapper,
+            PagedResourcesAssembler<OrderItemResponseDTO> assembler
     ) {
         this.repository = repository;
         this.productRepository = productRepository;
@@ -44,6 +51,7 @@ public class OrderItemService {
         this.serviceOrder = serviceOrder;
         this.hateoas = hateoas;
         this.modelMapper = modelMapper;
+        this.assembler = assembler;
     }
 
     public OrderItemResponseDTO createOrderItem(OrderItemRequestDTO itemDTO) {
@@ -83,17 +91,18 @@ public class OrderItemService {
         return dto;
     }
 
-    public List<OrderItemResponseDTO> findAllOrderItems() {
-        logger.info("Finding all orders items!");
-        var orderItems = repository.findAll();
-        List<OrderItemResponseDTO> dtos = new ArrayList<>();
-        orderItems.forEach(orderItem -> {
-            OrderItemResponseDTO orderItemResponse = modelMapper.map(orderItem, OrderItemResponseDTO.class);
-            hateoas.links(orderItemResponse.getProduct());
-            hateoas.links(orderItemResponse);
-            dtos.add(orderItemResponse);
+    public PagedModel<EntityModel<OrderItemResponseDTO>> findAllOrderItemsPage(Pageable pageable) {
+        logger.info("Finding all orders items");
+        Page<OrderItem> orderItems = repository.findAll(pageable);
+
+        Page<OrderItemResponseDTO> orderItemResponseDTOS = orderItems.map(orderItem -> {
+            OrderItemResponseDTO orderItemResponseDTO = modelMapper.map(orderItem, OrderItemResponseDTO.class);
+            hateoas.links(orderItemResponseDTO.getProduct());
+            hateoas.links(orderItemResponseDTO);
+            return orderItemResponseDTO;
         });
-        return dtos;
+
+        return assembler.toModel(orderItemResponseDTOS);
     }
 
     public OrderItemResponseDTO updateOrderItemById(Long id, OrderItemRequestDTO item) {

@@ -10,6 +10,11 @@ import br.com.gerencimentodepedidos.utils.HateoasLinks;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,11 +26,13 @@ public class OrderService {
     private final OrderRepository repository;
     private final HateoasLinks hateoas;
     private final ModelMapper modelMapper;
+    private final PagedResourcesAssembler<OrderResponseDTO> assembler;
 
-    public OrderService(OrderRepository repositoryOrder, HateoasLinks hateoas, ModelMapper mapper) {
+    public OrderService(OrderRepository repositoryOrder, HateoasLinks hateoas, ModelMapper mapper, PagedResourcesAssembler<OrderResponseDTO> assembler) {
         this.repository = repositoryOrder;
         this.hateoas = hateoas;
         this.modelMapper = mapper;
+        this.assembler = assembler;
     }
 
     private final Logger logger = LoggerFactory.getLogger(OrderService.class.getName());
@@ -50,20 +57,21 @@ public class OrderService {
         return dto;
     }
 
-    public List<OrderResponseDTO> findAllOrders() {
+    public PagedModel<EntityModel<OrderResponseDTO>> findAllOrderPage(Pageable pageable) {
         logger.info("Finding all orders!");
-        var orders = repository.findAll();
-        List<OrderResponseDTO> dtos = new ArrayList<>();
-        orders.forEach(order -> {
-            OrderResponseDTO orderResponse = modelMapper.map(order, OrderResponseDTO.class);
-            orderResponse.getItems().forEach(orderItem -> {
+        Page<Order> orders = repository.findAll(pageable);
+
+        Page<OrderResponseDTO> orderResponseDTOS = orders.map(order -> {
+            OrderResponseDTO orderResponseDTO = modelMapper.map(order, OrderResponseDTO.class);
+            orderResponseDTO.getItems().forEach(orderItem -> {
                 hateoas.links(orderItem);
                 hateoas.links(orderItem.getProduct());
             });
-            hateoas.links(orderResponse);
-            dtos.add(orderResponse);
+            hateoas.links(orderResponseDTO);
+            return orderResponseDTO;
         });
-        return dtos;
+
+        return assembler.toModel(orderResponseDTOS);
     }
 
     public void deleteOrderById(Long id) {

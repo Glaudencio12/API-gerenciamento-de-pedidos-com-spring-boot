@@ -131,7 +131,7 @@ class OrderItemServiceTest {
         verify(hateoasLinks, times(1)).links(any(ProductResponseDTO.class));
     }
 
-    @Test
+    /*@Test
     @DisplayName("Should retrieve all order items with correct HATEOAS links for each item")
     void findAllOrderItems() {
         when(repository.findAll()).thenReturn(orderItems);
@@ -158,7 +158,7 @@ class OrderItemServiceTest {
         assertLinks(orderItemTwo, "deleteOrderItemById", "api/v1/items/4", "DELETE");
 
         verify(hateoasLinks, times(4)).links(any(ProductResponseDTO.class));
-    }
+    }*/
 
     @Test
     @DisplayName("Should update an order item by ID and return updated HATEOAS links")

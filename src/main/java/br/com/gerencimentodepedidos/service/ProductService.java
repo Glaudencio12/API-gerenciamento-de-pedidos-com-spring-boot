@@ -9,6 +9,11 @@ import br.com.gerencimentodepedidos.utils.HateoasLinks;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
@@ -25,12 +30,14 @@ public class ProductService {
     private final OrderService OrderService;
     private final HateoasLinks hateoas;
     private final ModelMapper modelMapper;
+    private final PagedResourcesAssembler<ProductResponseDTO> assembler;
 
-    public ProductService(ProductRepository repository, OrderService serviceOrder, HateoasLinks hateoas, ModelMapper modelMapper) {
+    public ProductService(ProductRepository repository, OrderService serviceOrder, HateoasLinks hateoas, ModelMapper modelMapper, PagedResourcesAssembler<ProductResponseDTO> assembler) {
         this.repository = repository;
         this.OrderService = serviceOrder;
         this.hateoas = hateoas;
         this.modelMapper = modelMapper;
+        this.assembler = assembler;
     }
 
     private final Logger logger = LoggerFactory.getLogger(ProductService.class.getName());
@@ -52,16 +59,18 @@ public class ProductService {
         hateoas.links(dto);
         return dto;
     }
-    public List<ProductResponseDTO> findAllProducts() {
+
+    public PagedModel<EntityModel<ProductResponseDTO>> findAllProductsPage(Pageable pageable) {
         logger.info("Finding all products");
-        var products = repository.findAll();
-        List<ProductResponseDTO> dtos = new ArrayList<>();
-        products.forEach(product -> {
-            ProductResponseDTO dto = modelMapper.map(product, ProductResponseDTO.class);
-            hateoas.links(dto);
-            dtos.add(dto);
+        Page<Product> products = repository.findAll(pageable);
+
+        Page<ProductResponseDTO> productResponseDTOS = products.map(product -> {
+            ProductResponseDTO productDTO = modelMapper.map(product, ProductResponseDTO.class);
+            hateoas.links(productDTO);
+            return productDTO;
         });
-        return dtos;
+
+        return assembler.toModel(productResponseDTOS);
     }
 
 

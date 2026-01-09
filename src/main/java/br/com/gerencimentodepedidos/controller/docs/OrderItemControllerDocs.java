@@ -9,10 +9,13 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 public interface OrderItemControllerDocs {
     @Operation(summary = "Create a order item", description = "Creates an item for an order", tags = {"Order Item"},
@@ -55,7 +58,14 @@ public interface OrderItemControllerDocs {
             @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
         }
     )
-    List<OrderItemResponseDTO> findAll();
+    PagedModel<EntityModel<OrderItemResponseDTO>> findAll(
+            @PageableDefault(
+                    page = 0,
+                    size = 10,
+                    sort = "quantity",
+                    direction = Sort.Direction.DESC
+            )Pageable pageable
+    );
 
     @Operation(summary = "Search an item", description = "Update an item by their respective ID passing the updateProductById via Body", tags = "Order Item",
         responses = {

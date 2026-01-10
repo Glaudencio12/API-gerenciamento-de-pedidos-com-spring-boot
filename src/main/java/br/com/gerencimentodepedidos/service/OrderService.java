@@ -17,7 +17,6 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,7 +27,12 @@ public class OrderService {
     private final ModelMapper modelMapper;
     private final PagedResourcesAssembler<OrderResponseDTO> assembler;
 
-    public OrderService(OrderRepository repositoryOrder, HateoasLinks hateoas, ModelMapper mapper, PagedResourcesAssembler<OrderResponseDTO> assembler) {
+    public OrderService(
+            OrderRepository repositoryOrder,
+            HateoasLinks hateoas,
+            ModelMapper mapper,
+            PagedResourcesAssembler<OrderResponseDTO> assembler
+    ) {
         this.repository = repositoryOrder;
         this.hateoas = hateoas;
         this.modelMapper = mapper;

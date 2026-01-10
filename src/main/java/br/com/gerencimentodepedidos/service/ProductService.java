@@ -18,8 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,7 +30,13 @@ public class ProductService {
     private final ModelMapper modelMapper;
     private final PagedResourcesAssembler<ProductResponseDTO> assembler;
 
-    public ProductService(ProductRepository repository, OrderService serviceOrder, HateoasLinks hateoas, ModelMapper modelMapper, PagedResourcesAssembler<ProductResponseDTO> assembler) {
+    public ProductService(
+            ProductRepository repository,
+            OrderService serviceOrder,
+            HateoasLinks hateoas,
+            ModelMapper modelMapper,
+            PagedResourcesAssembler<ProductResponseDTO> assembler
+    ) {
         this.repository = repository;
         this.OrderService = serviceOrder;
         this.hateoas = hateoas;

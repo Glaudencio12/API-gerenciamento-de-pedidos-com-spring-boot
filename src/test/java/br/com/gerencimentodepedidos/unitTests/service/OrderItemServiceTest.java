@@ -68,7 +68,7 @@ class OrderItemServiceTest {
         mockOrder = new MockOrder(mockItem);
 
         order = mockOrder.mockOrder(1);
-        orderRequestDTO = mockOrder.mockOrderDTO(1);
+        orderRequestDTO = mockOrder.mockOrderRequestDTO(1);
         product = mockProduct.mockProductEntity(1);
         productRequestDTO = mockProduct.mockProductDTORequest(1);
         orderItem = mockItem.mockItemEntity(1, order, product, 2);

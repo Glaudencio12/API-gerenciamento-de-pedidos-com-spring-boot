@@ -3,6 +3,7 @@ package br.com.gerencimentodepedidos.unitTests.mocks;
 import br.com.gerencimentodepedidos.data.dto.request.OrderItemRequestDTO;
 import br.com.gerencimentodepedidos.data.dto.request.OrderRequestDTO;
 import br.com.gerencimentodepedidos.data.dto.response.OrderItemResponseDTO;
+import br.com.gerencimentodepedidos.data.dto.response.OrderResponseDTO;
 import br.com.gerencimentodepedidos.model.Order;
 import br.com.gerencimentodepedidos.model.OrderItem;
 
@@ -17,11 +18,11 @@ public class MockOrder {
         this.mockItem = mockItem;
     }
 
-    public Order mockOrder(Integer number){
+    public Order mockOrder(Integer number) {
         if (number == null) {
             throw new IllegalArgumentException("Number cannot be null");
         }
-        
+
         Order order = new Order();
         order.setId(Long.valueOf(number));
         List<OrderItem> items = mockItem.mockItemsList(order);
@@ -35,11 +36,11 @@ public class MockOrder {
         return order;
     }
 
-    public OrderRequestDTO mockOrderDTO(Integer number){
+    public OrderRequestDTO mockOrderRequestDTO(Integer number) {
         if (number == null) {
             throw new IllegalArgumentException("Number cannot be null");
         }
-        
+
         OrderRequestDTO orderRequestDTO = new OrderRequestDTO();
         orderRequestDTO.setId(Long.valueOf(number));
 
@@ -56,6 +57,26 @@ public class MockOrder {
         orderRequestDTO.setFullValue(total);
         return orderRequestDTO;
     }
+
+    public OrderResponseDTO mockOrderResponseDTO(Integer number) {
+
+        if (number == null) {
+            throw new IllegalArgumentException("Number cannot be null");
+        }
+
+        OrderResponseDTO orderResponseDTO = new OrderResponseDTO();
+        orderResponseDTO.setId(Long.valueOf(number));
+
+        List<OrderItemResponseDTO> itemsResponse = mockItem.mockItemsDTOListResponse();
+        orderResponseDTO.setItems(itemsResponse);
+        double total = 0.0;
+        for (OrderItemResponseDTO item : itemsResponse) {
+            total += item.getProduct().getPrice() * item.getQuantity();
+        }
+        orderResponseDTO.setFullValue(total);
+        return orderResponseDTO;
+    }
+
 
     public List<Order> mockOrderList() {
         List<Order> orders = new ArrayList<>();

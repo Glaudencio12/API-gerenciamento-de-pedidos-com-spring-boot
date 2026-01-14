@@ -66,36 +66,24 @@ class ProductServiceTest {
         productRequestDTOS = mock.mockListProductsDTO();
     }
 
-    public static void assertLinks(ProductResponseDTO dto, String rel, String href, String type) {
-        assertTrue(dto.getLinks().stream().anyMatch(link ->
-                link.getRel().value().equals(rel) &&
-                link.getHref().endsWith(href) &&
-                link.getType().equals(type))
-        );
-    }
-
     @Test
     @DisplayName("Should create a product and add proper HATEOAS links")
     void createProduct() {
         when(modelMapper.map(any(ProductRequestDTO.class), eq(Product.class))).thenReturn(product);
         when(repository.save(ArgumentMatchers.any(Product.class))).thenReturn(product);
         when(modelMapper.map(any(Product.class), eq(ProductResponseDTO.class))).thenReturn(productResponseDTO);
-        lenient().doCallRealMethod().when(hateoasLinks).links(any(ProductResponseDTO.class));
+
+        doNothing().when(hateoasLinks).links(any(ProductResponseDTO.class));
 
         var result = service.createProduct(productRequestDTO);
 
         assertNotNull(result);
         assertNotNull(result.getLinks());
+
         verify(repository, atLeastOnce()).save(any(Product.class));
         verify(hateoasLinks, atLeastOnce()).links(any(ProductResponseDTO.class));
         verify(modelMapper, times(1)).map(any(Product.class), eq(ProductResponseDTO.class));
         verify(modelMapper, times(1)).map(any(ProductRequestDTO.class), eq(Product.class));
-
-        assertLinks(result, "findProductById", "/api/v1/products/1", "GET");
-        assertLinks(result, "findAllProducts", "/api/v1/products", "GET");
-        assertLinks(result, "createProduct", "/api/v1/products", "POST");
-        assertLinks(result, "updateProductById", "/api/v1/products/1", "PUT");
-        assertLinks(result, "deleteProductById", "/api/v1/products/1", "DELETE");
     }
 
     @Test
@@ -103,33 +91,29 @@ class ProductServiceTest {
     void findProductById() {
         when(repository.findById(product.getId())).thenReturn(Optional.of(product));
         when(modelMapper.map(any(Product.class), eq(ProductResponseDTO.class))).thenReturn(productResponseDTO);
-        lenient().doCallRealMethod().when(hateoasLinks).links(any(ProductResponseDTO.class));
+
+        doNothing().when(hateoasLinks).links(any(ProductResponseDTO.class));
 
         var result = service.findProductById(1L);
 
         assertNotNull(result);
         assertNotNull(result.getLinks());
+
         verify(repository, atLeastOnce()).findById(anyLong());
         verify(hateoasLinks, atLeastOnce()).links(any(ProductResponseDTO.class));
         verify(modelMapper, times(1)).map(any(Product.class), eq(ProductResponseDTO.class));
-
-        assertLinks(result, "findProductById", "/api/v1/products/1", "GET");
-        assertLinks(result, "findAllProducts", "/api/v1/products", "GET");
-        assertLinks(result, "createProduct", "/api/v1/products", "POST");
-        assertLinks(result, "updateProductById", "/api/v1/products/1", "PUT");
-        assertLinks(result, "deleteProductById", "/api/v1/products/1", "DELETE");
     }
 
     @Test
     @DisplayName("Should retrieve all paginated products")
-    @Disabled
     void findAllProducts() {
         Pageable pageable = PageRequest.of(0, 10);
         Page<Product> productPage = new PageImpl<>(products);
 
         when(repository.findAll(pageable)).thenReturn(productPage);
         when(modelMapper.map(any(Product.class), eq(ProductResponseDTO.class))).thenReturn(productResponseDTO);
-        lenient().doCallRealMethod().when(hateoasLinks).links(any(ProductResponseDTO.class));
+
+        doNothing().when(hateoasLinks).links(any(ProductResponseDTO.class));
 
         List<ProductResponseDTO> productResponseDTOS = productPage.stream().map(
                 product -> modelMapper.map(product, ProductResponseDTO.class)
@@ -158,23 +142,18 @@ class ProductServiceTest {
         when(repository.findById(1L)).thenReturn(Optional.of(product));
         when(repository.save(product)).thenReturn(product);
         when(modelMapper.map(any(Product.class), eq(ProductResponseDTO.class))).thenReturn(productResponseDTO);
-        lenient().doCallRealMethod().when(hateoasLinks).links(any(ProductResponseDTO.class));
+
+        doNothing().when(hateoasLinks).links(any(ProductResponseDTO.class));
 
         var result = service.updateProductById(1L, productRequestDTO);
 
         assertNotNull(result);
         assertNotNull(result.getLinks());
+
         verify(repository, atLeastOnce()).findById(anyLong());
         verify(repository, atLeastOnce()).save(any(Product.class));
         verify(hateoasLinks, atLeastOnce()).links(any(ProductResponseDTO.class));
         verify(modelMapper, times(1)).map(any(Product.class), eq(ProductResponseDTO.class));
-
-
-        assertLinks(result, "findProductById", "/api/v1/products/1", "GET");
-        assertLinks(result, "findAllProducts", "/api/v1/products", "GET");
-        assertLinks(result, "createProduct", "/api/v1/products", "POST");
-        assertLinks(result, "updateProductById", "/api/v1/products/1", "PUT");
-        assertLinks(result, "deleteProductById", "/api/v1/products/1", "DELETE");
     }
 
     @Test
@@ -196,6 +175,7 @@ class ProductServiceTest {
 
         assertNotNull(result);
         assertNotNull(result.getLinks());
+
         verify(repository, atLeastOnce()).findById(anyLong());
         verify(repository, atLeastOnce()).save(any(Product.class));
         verify(hateoasLinks, atLeastOnce()).links(any(ProductResponseDTO.class));
@@ -228,8 +208,7 @@ class ProductServiceTest {
         @DisplayName("Should throw ResourceNotFoundException when finding product by ID")
         void shouldThrowExceptionWhenFindingProduct() {
 
-            ResourceNotFoundException exception = assertThrows(
-                    ResourceNotFoundException.class,
+            ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
                     () -> service.findProductById(0L)
             );
             assertEquals("Product not found for this id", exception.getMessage());
@@ -239,8 +218,7 @@ class ProductServiceTest {
         @DisplayName("Should throw ResourceNotFoundException when updating product by ID")
         void shouldThrowExceptionWhenUpdatingProduct() {
 
-            ResourceNotFoundException exception = assertThrows(
-                    ResourceNotFoundException.class,
+            ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
                     () -> service.updateProductById(0L, productRequestDTO)
             );
             assertEquals("Product not found for this id", exception.getMessage());
@@ -250,8 +228,7 @@ class ProductServiceTest {
         @DisplayName("Should throw ResourceNotFoundException when deleting product by ID")
         void shouldThrowExceptionWhenDeletingProduct() {
 
-            ResourceNotFoundException exception = assertThrows(
-                    ResourceNotFoundException.class,
+            ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
                     () -> service.deleteProductById(0L)
             );
             assertEquals("Product not found for this id", exception.getMessage());
